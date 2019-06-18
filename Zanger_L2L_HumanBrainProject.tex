@@ -33,10 +33,10 @@ Learning to Learn in the Context of Spiking Neural Networks
         {\tt\small zanger.moritz@googlemail.com}}%
 }
 
+\usepackage{graphicx}
+\graphicspath{{./images/}}
 
 \begin{document}
-
-
 
 \maketitle
 \thispagestyle{empty}
@@ -127,30 +127,192 @@ milliseconds in length (S. Bohte, J. Kok)
 
 The field of reinforcement learning (RL) has recently celebrated great success at reaching human-like and even surpassing human abilities on
 complex environments such as Atari and Go (Mnih et al. and Silver et al.) with the implementation of Deep Neural Networks to 
-account for non-linear function approximation over high-dimensional action and state spaces. However Wang et al. point out that currently two major drawbacks
-are limiting the application of reinforcement learning (J. Wang et al.): 
+account for non-linear function approximation over high-dimensional action and state spaces. However Artificial Intelligence in general 
+(Landsell and Kording) and Reinforcement Learning in particular (Dual et al.) currently suffer from two major drawbacks, 
+that are limiting their application and design (J. Wang et al.): 
 \begin{itemize}
-
         \item Firstly the immense volume of required training data and the relatively expensive generation of this data in often simulated
         environments.
         \item Secondly RL-algorithms often have to be heavily tailored to a specific range of tasks and various algorithms, each of which
         depending on numerous hyperparameters and thus requiring immense efforts compared to currently reached results.
-        
 \end{itemize}        
- Wang et al. as well as Duan et al. approach this challenge in RL by introducing frameworks that allow RL algorithms to learn more data-efficiently
- and deliver a way of including priors in the underlying system, thus tackling the Handicap RL-algorithms have. That is learning their complete 
- knowledge about the world from scratch, whereas the human brain has undergone a long history of evolutionary development, adjusting its 
- learning paradigms to the challenges it faces (Duan et al.).
 
-\subsection{Learning to Reinforcement Learn (metal-RL)}
+Botvinick et al. explain these weak spots in AI with a need for low learning rates and the bias-variance trade-off.
+Low learning rates are necessary to prevent both catastrophic interference (discarding previously reached successful
+configurations) and overfitting (Hardt, M. et al.). The bias-variance trade-off is a phenomenon describing the contrary 
+working directions of efficiency-driving biases or priors and performing on a wider range of tasks. \newline
+
+--------- maybe more basics from hochreiter et al. -------- \newline
+
+With some approaches addressing these issues existing, Landsell and Kording argue, that these L2L approaches can be categorized into 
+either Learning to Optimize or Structure Learning (Landsell and Kording). Learning to Optimize focusses on the general 
+adaption of network parameters to achieve efficient learning rules on arbirary Task classes without hand-selection. Similiarly to the way
+gradient descent applies small changes of the weights in an NN in order to minimize loss functions, the design of AI systems can be viewed as
+an optimization problem itself, that requires parameter optimization to ensure a well performing algorithm. Structure Learning 
+on the other hand makes use of structural similarities within a finite family of tasks to reach higher data
+efficiency due to its prior adaptnedness to the given family of tasks(Landsell and Kording). \newline
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.19]{L2Optimize_StrLearning_Landsell.png}
+  }}
+  \caption{Types of learning-to-learn in AI. Learning-to-learn can be roughly divided into learning to optimize and structure learning.
+  In AI, hyperparameter optimization is
+  an example of learning to optimize (Maclaurin et al. 2015), while a recurrent neural network taking rewards, actions and observations
+   can often be used to perform structure learning (Wang et al.)(Landsell et al.).}
+        \label{figurelabel}
+     \end{figure}
+
+
+\subsection{Learning to Reinforcement Learn (metal-RL) and RL²}
+
+A high level architecture consisting of a learner (performing on the task itself) and a meta-learner (adjusting the learner) is
+inherent to most implementations of L2L (Landsell and Kording) and has been refined in various ways to create new L2L Systems, as will be
+explained in the following section.
+
+Wang et al. as well as Duan et al. introduced frameworks that can be thought of as generating an RL algorithm of their own and
+provide agents, who are given a predesigned prior to efficiently learn any task $T \epsilon F$ (in the original papers denoted as 
+a Markov Decision Process (MDP) $m \epsilon M$) from a family of interrelated fasks $F$(i.e. a set of MDPs $M$). 
+
+In their attempt to design an algorithm, capable of performing well on a set $M$ of Markov Decision Processes (MDPs), Duan et al. implement a nested
+system in which learning an RL algorithm is regarded as a reinforcement learning problem itself, hence the name RL²(Duan et al.). The agent performing 
+on a randomly drawn separate MDP $m \epsilon M$ from the distribution $\rho_{M} : M \longrightarrow R_{+}$ is represented as a recurrent neural
+network (RNN) which outputs the probability distribution over the tasks action-space $\pi$ (policy) based on a function $\phi (s,a,r,d)$ of 
+the tuple (state, action, reward, termination flag) (Duan et al.). On a higher abstraction layer, this RNN is being 
+optimized by an implementaion of Trust Region Policy Optimization (TRPO), a 
+state-of-the-art DRL algorithm (Schulman et al., 2015) with several advantages regarding stability and hyperparameter dependance.\newline
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.185]{meta-RL_Botvinick.png}
+  }}
+  \caption{Schematic of Meta-reinforcement Learning, Illustrating the Inner and Outer Loops of Training. The
+  outer loop trains the parameter weights $\theta$, which determine the inner-loop learner (’Agent’, instantiated by a recurrent
+  neural network) that interacts with an environment for the duration of the episode. For every cycle of the outer loop, a new
+  environment is sampled from a distribution of environments, which share some common structure (Botvinick et al.).}
+        \label{figurelabel}
+     \end{figure}
+
+Wang et al. define a similiar setup in which a RL-algorithm is responsible for learning the weights of a nested RNN. Both, inner and outer loop 
+in this framework draw their learning experience from the reward information generated by the actions of the RNN (Wang et al.), where 
+the RNN holds information on the previously chosen action and the subsequent rewards. However the process of learning
+in each of these loops is realized differently and results in specializations of different scopes. While the wrapping RL-algorithm used to 
+optimize the weights of the RNN operates over the entire set of episodes, that is to say all MDPs $M$, learning of the nested RNN 
+within a single task $m$ is based on the inner recurrent dynamics of the network. The policy outputs $\pi$ of this network can 
+be viewed as an RL-algorithm on its own, resulting in the name meta-RL. For the implementation of this framework Wang et al. 
+used a LSTM according to Hochreiter and Schmidhuber (Hochreiter and SChmidhuber, 1997) to account for the inner RNN, while both synchronous 
+asynchronous advantage actor critics (A2C and A3C) (Mnih et al.) were employed to learn its parameters. The observation vectors of experiment environments
+were either directly fed to the LSTM one-hot-encoded or passed through an additional deep encoder model (Wang et al.). 
+Experiments on a series of bandit problem and two
+MDP-centered problems with implementation architectures as described above showed, that meta-RL delivers 
+competitive results compared to problem-specific algorithms (Thompson sampling, UCB, Gittins) while operating on a 
+wider set of tasks. \newline
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.14]{metaRL_arcs_Wang.png}
+  }}
+  \caption{Advantage actor-critic with recurrence. In all architectures, reward and last action are additional inputs
+        to the LSTM. For non-bandit environments, observation is also fed into the LSTM either as a one-hot or passed
+        through an encoder model [3-layer encoder: two convolutional layers (first layer: 16 8x8 filters applied with
+        stride 4, second layer: 32 4x4 filters with stride 2) followed by a fully connected layer with 256 units and then a
+        ReLU non-linearity. See for details Mirowski et al. (2016)]. For bandit experiments, current time step is also
+        fed in as input. π = policy; v = value function. A3C is the distributed multi-threaded asynchronous version
+        of the advantage actor-critic algorithm (Mnih et al., 2016); A2C is single threaded. (a) Architecture used in
+        experiments 1-5. (b) Convolutional-LSTM architecture used in experiment 6. (c) Stacked LSTM architecture
+        with convolutional encoder used in experiments 6 and 7 (Wang et al.)}
+        \label{figurelabel}
+     \end{figure}
+  
+
+A notable characteristic of both previously described setups is that the learning rate of the nested RNN is chosen lower compared 
+to the outer optimization loop, consequently preventing
+the agent from overfitting to a single task $m$, yet gathering knowledge from the entire MDP space $M$ (Botvinick et al.).\newline
+
+
+more from :  \newline
+Meta-SGD: Learning to Learn Quickly for Few-Shot Learning (Li et al.) \newline
+Meta-learning in Reinforcement Learning (Schweighofer and Doya) \newline
+Learning to Learn without Gradient Descent by Gradient Descent (Chen et al.)
+
 
 \subsection{L2L in the Context of Spiking Neural Networks}
 
+tbd \dots
+Long short-term memory and Learning-to-learn in networks of spiking neurons (Bellec et al.)
+Biologically inspired alternatives to backpropagation through time for learning in recurrent neural nets (Bellec et al.)
+Embodied Neuromorphic Vision with Event-Driven Random Backpropagation (Kaiser et al.)
+
 \subsection{Implications for Neuroscience and Psychology}
+That is, having to learn their complete knowledge about the world from scratch, whereas the human brain has undergone a long history of evolutionary
+development, adjusting its learning paradigms to the challenges it faces (Duan et al.). \newline
+
+more from: \newline
+Reinforcement Learning, Fast and Slow (Botvinick et al.) \newline
+Biologically inspired alternatives to backpropagation through time for learning in recurrent neural nets (Bellec et al.) \newline
+Towards learning-to-learn (Landsell and Kording) \newline
 
 \section{APPLICATIONS OF L2L AND SNNS IN ROBOTICS}
 
-\subsection{Navigational Tasks with Meta-RL and SNN}
+While the development of robots has shown great success in the recent past with advances being pushed from 
+numerous different fields of engineering, including that of machine learning and especially classic 
+DNNs, it is still a tedious and highly taylored process, requiring many domain experts. Many of the underlying algorithms in 
+the control, motion planning and sensoric interpretation require suitable setups of the environment with little room
+for variation. For example industrial manipulator robots can perform outstandingly when placed in a fixed production line, yet 
+recognizing and grasping everyday objects in a kitchen or workshop poses a much higher challenge, as it requires the skill to 
+make sense of broad environments with numerous imaginable tasks. Furthermore the dominating problems of applying RL in 
+robotics can be summarized by the following problem classes (https://towardsdatascience.com/reinforcement-learning-for-real-world-robotics):
+
+\begin{itemize}
+        \item Sample efficiency
+        \item Sim2Real
+        \item Reward Specification
+        \item Safety
+\end{itemize}   
+
+The previous sections revealed the potential of L2L frameworks in terms of sample efficiency and generalization, thus constituting 
+feasible answers to expensive data generation or overfitting to simulator-specific features. However this further implies a 
+reflection on the scalability of said L2L approaches in order to evaluate their applicability in the often very
+high-dimensional task spaces faced in robotics. \newline
+Wang et al. examine meta-RL's ability to detect abstract task structures in large scale problems by adapting a well-known behavioural experiment 
+described by Harlow (Harlow, 1949) to a visual fixation task. In Harlows experiment, monkeys were presented two unfamiliar objects, with each being 
+assigned a bowl filled with food and an empty bowl respectively. The monkeys were allowed to choose one of the objects and received the reward, if present. 
+Despite switching the objects for new unkown objects in each episode, upon replaying several trials in several episodes of this game, the animals showed
+a general understanding of the underlying structure of the problem. After beginning a new episode with new objects, the monkeys inevitably took 
+one random guess but managed to succeed in the following trials of the episode (Botvonick et al.). \newline
+
+\subsection{Tasks in high-dimensional spaces}
+
+Motion and path planning is a fundamental problem in all of robotics, whether it be within a space of rich visual input, sensory data or
+configuration/join-spaces. Similiar to the problem described by Harlow, the navigational task in the I-maze environment as described by 
+Mirowski et al. and Jaderberg et al. requires a understanding of the general structure of the problem in order to learn sample-efficiently 
+on the specific task. In this case the same maze spawns a goal location on random position within the maze where the agent has to learn
+a motion path to the goal in as few trials as possible. The results of Wang et al. show, that an architecture of stacked LSTM is able to 
+solve the task after having conducted one exploration run (finishing the episode in ~100 timesteps) notably faster (~30 timesteps) within few
+explotation runs. A so to say proof of concept is the fact, that a feedforward architecture A3C learner is not able to solve the problem at all. 
+ 
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.23]{Maze_wang.png}
+  }}
+  \caption{a) view of I-maze showing goal object in one of the 4 alcoves b) following initial exploration
+  (light trajectories), agent repeatedly goes to goal (blue trajectories) c) Performance of stacked LSTM (termed
+  “Nav A3C”) and feedforward (“FF A3C”) architectures, per episode (goal = 10 points) averaged across top 5
+  hyperparameters. e) following initial goal discovery (goal hits marked in red), value function occurs well in
+  advance of the agent seeing the goal which is hidden in an alcove. Figure used with permission from Mirowski
+  et al. (2016).
+  }
+        \label{figurelabel}
+     \end{figure}
+
+more from :  \newline
+Meta-SGD: Learning to Learn Quickly for Few-Shot Learning (Li et al.) \newline
+Meta-learning in Reinforcement Learning (Schweighofer and Doya) \newline
+Learning to Learn without Gradient Descent by Gradient Descent (Chen et al.)
 
 \subsection{Speed Improvement and Few-Shot Learning}
 
