@@ -1,0 +1,193 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\IEEEoverridecommandlockouts                              % This command is only needed if 
+                                                          % you want to use the \thanks command
+
+\overrideIEEEmargins                                      % Needed to meet printer requirements.
+
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+% The following packages can be found on http:\\www.ctan.org
+%\usepackage{graphics} % for pdf, bitmapped graphics files
+%\usepackage{epsfig} % for postscript graphics files
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+%\usepackage{amsmath} % assumes amsmath package installed
+%\usepackage{amssymb}  % assumes amsmath package installed
+
+\title{\LARGE \bf
+Learning to Learn in the Context of Spiking Neural Networks
+}
+
+
+\author{Moritz Zanger$^{1}$ % <-this % stops a space
+\thanks{*This work was not supported by any organization}% <-this % stops a space
+\thanks{$^{1}$Moritz Zanger, Faculty of Mechanical Engineering, Karlsruhe Institute of Technology
+        {\tt\small zanger.moritz@googlemail.com}}%
+}
+
+
+\begin{document}
+
+
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+L2L abstract - I will write it in the end
+
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+
+Introduction to the topic
+
+\section{RECURRENT NEURAL NETWORKS}
+
+\subsection{Subheading}
+
+\subsection{Subheading2}
+
+\section{SPIKING NEURAL NETWORKS (SNN)}
+
+Second generation neural networks, as commonly described in the literature, base their neurons activation on various continuous functions 
+and allow a larger space of operations. Maass et al. (Maass et al.) introduced a third setup for 
+designing neural network models. This setup is based on a neuron model that integrates a different conception on how neurons are activated,
+thus allowing a more accurate representation of biological neurons and their inner workings. This model of Spiking Neural Networks (SNN) employs
+integrate-and-fire neurons (Maass et al.) which allow timing of activation pulses and therefore a potentially higher capability of representing 
+information. 
+
+\subsection{Neurons - Activation and Signal Processing} 
+
+The process of signal transportation within biological neurons ...(figures and Gruning and Bohte)\newline
+
+The fundemantal idea behind the computational units of an SNN revolves around integrating a temporal factor 
+in the representation of information. Various models of these spiking neurons, such as the integrate-and-fire model (Abbott), 
+the Hodgkin-Huxley model (Hodgkin and Huxley), the model by Izhikevich (Izhikevich) and the Spike Response Model by Gerstner (Gerstner) 
+exist and vary in their attempt to trade off biological accuracy and computational complexity (Grunte and Bohte).
+The Leaky-Integrate-and-Fire model is nowadays the most widespread apporach due to its simplicity and computational advantages. 
+The representation of the activation process of the neron is modeled by an electrical circuit in which the membrane potential, threshold voltage,
+resting potential and leak rate are realized through a capacitor, gate, battery and resistance respectively. (Abbott and fig. Ponulak)
+\newline
+At any moment, an LIF neuron has a drive v, which depends on its bias
+current, b; its inputs a(in)j (where the index j runs from 1 to the number
+of inputs); and its synaptic weights, Wj (Eliasmith and Anderson, 2002). (... and so on)
+
+\subsection{Spike-based Neural Codes}
+
+Whilst encoding and decoding of the desired information is much simpler and intuitive in second generation neural network models,
+this is a larger challenge for the time-dependent neurons in an SNN, as there is an arbitrary 
+number of theorically possible ways of encoding information in the neurons. In fact the biological process of information decoding is 
+still being researched, whereas various methods have been introduced Neuroscience Enginering.
+
+\begin{itemize}
+
+        \item Rate Coding is an approach aiming at recording spike rates during fixed time frames. This implementation of spike encoding can be seen as an analog way of interpreting spike trains in SNNs.
+        \item Latency Coding encodes spikes based on their timing rather than their multiplicity. This encoding has for example been used in unsupervised learning [43], and
+        supervised learning methods like SpikeProp (S. Bohte, J. Kok)
+        \item Fully temporal codes are a more general term which includes the above mentioned approaches. It encodes information based on the precise
+        timing of each spike in a spike train. (Gruning and Bohte)
+        \item Gaussian Coding applies a gaussian distribution over recorded spikes of each neuron and encodes information based on their stochastic occurence.
+        \item ...
+        
+\end{itemize}        
+
+\subsection{Learning in Spiking Neural Networks - Synaptic Plasiticity}
+
+Whilst conventional neural networks employ a stochastic version of gradient descend to backpropagate erros throughout the network, the same approach
+is difficult to apply in the realm of SNNs due to their temporal dependance and the non-differentiability of spike trains. Whereas multiple learning
+rules adressing SNNs exist (such as Hebbian Rule, Binarization of ANNs, Conversion from ANNs and Variations of backpropagation (Pfeiffer and Pfeil)), a more 
+biologically realistic training rule is introduced with the spike-timing-dependant plasiticy (STDP). The key feature of this approach is 
+to adjust weights between a pre- and post-synaptic neuron according to their relative spike times within an interval of roughly tens of 
+milliseconds in length (S. Bohte, J. Kok)
+... more on STDP 
+
+\subsubsection{Backpropagation and Feedback-alignment}
+
+
+\subsubsection{Error Feedback}
+
+\subsection{Performance of SNNs)}
+
+\section{LEARNING TO LEARN (L2L)}
+
+The field of reinforcement learning (RL) has recently celebrated great success at reaching human-like and even surpassing human abilities on
+complex environments such as Atari and Go (Mnih et al. and Silver et al.) with the implementation of Deep Neural Networks to 
+account for non-linear function approximation over high-dimensional action and state spaces. However Wang et al. point out that currently two major drawbacks
+are limiting the application of reinforcement learning (J. Wang et al.): 
+\begin{itemize}
+
+        \item Firstly the immense volume of required training data and the relatively expensive generation of this data in often simulated
+        environments.
+        \item Secondly RL-algorithms often have to be heavily tailored to a specific range of tasks and various algorithms, each of which
+        depending on numerous hyperparameters and thus requiring immense efforts compared to currently reached results.
+        
+\end{itemize}        
+ Wang et al. as well as Duan et al. approach this challenge in RL by introducing frameworks that allow RL algorithms to learn more data-efficiently
+ and deliver a way of including priors in the underlying system, thus tackling the Handicap RL-algorithms have. That is learning their complete 
+ knowledge about the world from scratch, whereas the human brain has undergone a long history of evolutionary development, adjusting its 
+ learning paradigms to the challenges it faces (Duan et al.).
+
+\subsection{Learning to Reinforcement Learn (metal-RL)}
+
+\subsection{L2L in the Context of Spiking Neural Networks}
+
+\subsection{Implications for Neuroscience and Psychology}
+
+\section{APPLICATIONS OF L2L AND SNNS IN ROBOTICS}
+
+\subsection{Navigational Tasks with Meta-RL and SNN}
+
+\subsection{Speed Improvement and Few-Shot Learning}
+
+\section{CONCLUSION AND CHALLENGES}
+
+\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
+                                  % on the last page of the document manually. It shortens
+                                  % the textheight of the last page by a suitable amount.
+                                  % This command does not take effect until the next page
+                                  % so it should come on the page before the last. Make
+                                  % sure that you do not shorten the textheight too much.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{APPENDIX}
+
+Appendixes should appear before the acknowledgment.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+
+\bibitem{c1}
+
+
+
+
+\end{thebibliography}
+
+
+
+
+\end{document}
