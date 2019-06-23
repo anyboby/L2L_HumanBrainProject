@@ -257,9 +257,9 @@ Towards learning-to-learn (Landsell and Kording) \newline
 
 \section{APPLICATIONS OF L2L AND SNNS IN ROBOTICS}
 
-While the development of robots has shown great success in the recent past with advances being pushed from 
-numerous different fields of engineering, including that of machine learning and especially classic 
-DNNs, it is still a tedious and highly taylored process, requiring many domain experts. Many of the underlying algorithms in 
+Robotics has undergone many successful developments in the recent past with advances being pushed from 
+numerous fields of engineering, including that of machine learning. Yet the design process is still a tedious and 
+highly taylored one, requiring many domain experts. Many of the underlying algorithms in 
 the control, motion planning and sensoric interpretation require suitable setups of the environment with little room
 for variation. For example industrial manipulator robots can perform outstandingly when placed in a fixed production line, yet 
 recognizing and grasping everyday objects in a kitchen or workshop poses a much higher challenge, as it requires the skill to 
@@ -273,26 +273,26 @@ robotics can be summarized by the following problem classes (https://towardsdata
         \item Safety
 \end{itemize}   
 
-The previous sections revealed the potential of L2L frameworks in terms of sample efficiency and generalization, thus constituting 
+The previous sections revealed a high potential in L2L frameworks in terms of sample efficiency and generalization, thus constituting 
 feasible answers to expensive data generation or overfitting to simulator-specific features. However this further implies a 
 reflection on the scalability of said L2L approaches in order to evaluate their applicability in the often very
 high-dimensional task spaces faced in robotics. \newline
 Wang et al. examine meta-RL's ability to detect abstract task structures in large scale problems by adapting a well-known behavioural experiment 
-described by Harlow (Harlow, 1949) to a visual fixation task. In Harlows experiment, monkeys were presented two unfamiliar objects, with each being 
-assigned a bowl filled with food and an empty bowl respectively. The monkeys were allowed to choose one of the objects and received the reward, if present. 
+described by Harlow (Harlow, 1949) to a visual fixation task. In Harlows experiment, monkeys were presented two unfamiliar objects, with one 
+hiding a bowl filled with food and while the other holds an empty bowl. The monkeys were allowed to choose one of the objects and received the reward, if present. 
 Despite switching the objects for new unkown objects in each episode, upon replaying several trials in several episodes of this game, the animals showed
-a general understanding of the underlying structure of the problem. After beginning a new episode with new objects, the monkeys inevitably took 
+a general understanding of the underlying structure of the problem. After beginning a new episode with new objects, the monkeys would, inevitably, take 
 one random guess but managed to succeed in the following trials of the episode (Botvonick et al.). \newline
 
 \subsection{Tasks in high-dimensional spaces}
 
-Motion and path planning is a fundamental problem in all of robotics, whether it be within a space of rich visual input, sensory data or
+Motion and path planning are fundamental problems in robotics, whether it be within a space of rich visual input, sensory data or
 configuration/join-spaces. Similiar to the problem described by Harlow, the navigational task in the I-maze environment as described by 
 Mirowski et al. and Jaderberg et al. requires a understanding of the general structure of the problem in order to learn sample-efficiently 
 on the specific task. In this case the same maze spawns a goal location on random position within the maze where the agent has to learn
 a motion path to the goal in as few trials as possible. The results of Wang et al. show, that an architecture of stacked LSTM is able to 
 solve the task after having conducted one exploration run (finishing the episode in ~100 timesteps) notably faster (~30 timesteps) within few
-explotation runs. A so to say proof of concept is the fact, that a feedforward architecture A3C learner is not able to solve the problem at all. 
+explotation runs. The reference baseline, a feedforward architecture A3C learner, is not able to solve the problem at all. 
  
 \begin{figure}[thpb]
         \centering
@@ -303,8 +303,29 @@ explotation runs. A so to say proof of concept is the fact, that a feedforward a
   (light trajectories), agent repeatedly goes to goal (blue trajectories) c) Performance of stacked LSTM (termed
   “Nav A3C”) and feedforward (“FF A3C”) architectures, per episode (goal = 10 points) averaged across top 5
   hyperparameters. e) following initial goal discovery (goal hits marked in red), value function occurs well in
-  advance of the agent seeing the goal which is hidden in an alcove. Figure used with permission from Mirowski
-  et al. (2016).
+  advance of the agent seeing the goal which is hidden in an alcove.
+  }
+        \label{figurelabel}
+     \end{figure}
+
+Duan et al. take a similiar approach in their evaluation of the feasbility of RL² in high-dimensional state spaces. Again a randomly generated 
+maze with a randomly placed target is chosen as the problem to solve for the agent. During one test run, the agent is given a number 
+of episodes during which the maze structure and target position remain fixed. In contrast to an earlier approach to this RL-Task shown by Oh et al. 
+RL² bases its actions within a more granular action space (Duan et al.). The environments sparse reward payout design (+1 for target, 
+-0.001 for wall hits, -0.04 per time frame) poses additional challenges to the agents learning and requires well-devloped exploration strategies 
+in the first episode in order to gain information on the problems ground structure. Cross-validation with a small and a larger version of the 
+maze environment show a significant reduction in solving trajectory lengths between the first to episodes and indicate, that the RL² algorithm 
+managed to utilize previoulsy gained information to come to good solutions more quickly. However the shown results are not yet optimal
+as the agent still forgets, though rarely, initially explored target positions and explores further paths in the second episode. Duan et al. 
+indicate that further imporvements might come with improved RL-algorithms as the outer-loop optimizer.
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.23]{duan_maze.png}
+  }}
+  \caption{Visualization of the agent’s behavior. In each scenario, the agent starts at the center of the
+  blue block, and the goal is to reach anywhere in the red block.  
   }
         \label{figurelabel}
      \end{figure}
