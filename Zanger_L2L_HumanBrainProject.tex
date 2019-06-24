@@ -56,11 +56,95 @@ L2L abstract - I will write it in the end
 
 Introduction to the topic
 
-\section{RECURRENT NEURAL NETWORKS}
+\section{RECURRENT NEURAL NETWORKS (RNNS)}
+Artificial Neural Networks (ANNs) are networks of biologically inspired computational units , neurons, that learn 
+according to certain learning rules thus improving their ability to perform a desired task, often classification or regression 
+problems. Accordingly, the performance demonstrated by ANNs is based on knowledge, inferred from data (Schuster and Paliwal).
+Many of the data driven problems in engineering involve the recognition of time dependent patterns (e.g. speech
+recognition, machine translation, machine vision in real-time video material), requiring special
+network architectures such as the Time-Delay Neural Networks (TDNN, Waibel et al.) or Recurrent Neural Networks (RNNs). 
+The latter revolve around the basic idea of including a loop in the networks neurons, allowing information to be passed 
+from past steps of the networks state to the next. 
 
-\subsection{Subheading}
+\subsection{Training RNNs}
+Unfolding an RNN over time results in a more approachable representation of this model as seen in fig. x. Training a 
+model of this structure can now be achieved in a similar way to the well-known backpropagation algorithm with the additional 
+ability to encode longer past information (Paul J. Werbos). 
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.22]{RNN-unrolled.png}
+        
+  }}
+  \caption{Unrolled RNN (colah.github.io)}
+        \label{figurelabel}
+     \end{figure}
 
-\subsection{Subheading2}
+The notation of symbols in the following is according to Jian Guo. The inputs are denoted by vector $\mathbf{x}$,
+with components indexed by $i$. We similarly define the current hidden layer state as vector $\mathbf{s}$, components indexed 
+by $j$, the previous hidden layer state as vector $\mathbf{s}(t-1)$, components indexed by $h$,
+the output layer as vector $\mathbf{y}$, components indexed by $k$. 
+The weight matrices are written as bold 
+uppercase Letters, where
+$\mathbf{V}$ maps $\mathbf{x}$ to the current state $\mathbf{s}(t)$, $\mathbf{U}$ maps the previous hidden 
+state $\mathbf{s}(t-1)$,
+and $\mathbf{W}$ transforms the current state $\mathbf{s}(t)$ to the output layer $\mathbf{y}$. 
+For clearness, the previously defined symbols can be seen in fig. x.
+Furthermore we describe the relation between outputs and net input function $net_j$ or $net_k$ of a layer 
+as the activation functions $f(net_j(t))$ and $g(net_k(t))$ respectively for the hidden and output layer. 
+Including biases $b_j$, $b_k$ for the net input functions, we conclude that the hidden state becomes
+(1) and the output is described by (3). 
+
+$$
+s_j(t) = f(net_j(t)) \eqno{(1)}
+$$
+$$
+net_j(t) = \sum_i^l x_i(t)v_{ji} + sum_h^ms_h(t-1)u_jh + b_j \eqno{(2)}
+$$
+$$
+y_k(t) = g(net_k(t)) \eqno{(3)}
+$$
+$$
+net_k(t) = \sum_j^m s_j(t)w_{kj} + b_k \eqno{(4)}
+$$
+
+In order to minimize the loss of our network, we define the widely used summed squared error as 
+a loss function with desired outputs $d$, total number of training samples $n$ and the number of 
+output units $o$. For computational reasons, the stochastic version of gradient descent utilizes 
+only subsets of our training collection, up to the extremum where $p=n$. 
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.18]{rnn_guo.png}
+        \includegraphics[scale=.18]{rnn_unfolded_guo.png}
+  }}
+  \caption{left: a simple RNN model with loop \newline right: An Unrolled RNN (Guo) (colah.github.io)}
+        \label{figurelabel}
+     \end{figure}
+
+
+@draft 
+Because the parameters are shared by all time steps in the network, the gradient at each output 
+depends not only on the calculations of the current time step, but also the previous time steps.
+This is called Backpropagation Through Time (BPTT)vanilla RNNs trained with BPTT have difficulties 
+learning long-term dependencies (e.g. dependencies between steps that are far apart) due to what 
+is called the vanishing/exploding gradient problem. There exists some machinery to deal with 
+these problems, and certain types of RNNs (like LSTMs) were specifically designed to get around them.
+
+
+\subsection{Long Short Term Memory (LSTM)}
+
+@draft 
+LSTMs don’t have a fundamentally different architecture from RNNs, but they use a different 
+function to compute the hidden state. The memory in LSTMs are called cells and you can think 
+of them as black boxes that take as input the previous state $h_{t-1}$ and current input $x_{t}$
+Internally these cells  decide what to keep in (and what to erase from) memory. They then 
+combine the previous state, the current memory, and the input. It turns out that these types of 
+units are very efficient at capturing long-term dependencies.
+
+\subsection{Attention and Augmented Recurrent Neural Networks}
+
 
 \section{SPIKING NEURAL NETWORKS (SNN)}
 
@@ -237,6 +321,7 @@ more from :  \newline
 Meta-SGD: Learning to Learn Quickly for Few-Shot Learning (Li et al.) \newline
 Meta-learning in Reinforcement Learning (Schweighofer and Doya) \newline
 Learning to Learn without Gradient Descent by Gradient Descent (Chen et al.)
+Learning to Learn Using Gradient Descent (Hochreiter et al.)
 
 
 \subsection{L2L in the Context of Spiking Neural Networks}
@@ -251,6 +336,7 @@ That is, having to learn their complete knowledge about the world from scratch, 
 development, adjusting its learning paradigms to the challenges it faces (Duan et al.). \newline
 
 more from: \newline
+Prefrontal cortex as a meta-reinforcement learning system (WAng)
 Reinforcement Learning, Fast and Slow (Botvinick et al.) \newline
 Biologically inspired alternatives to backpropagation through time for learning in recurrent neural nets (Bellec et al.) \newline
 Towards learning-to-learn (Landsell and Kording) \newline
@@ -322,7 +408,7 @@ indicate that further imporvements might come with improved RL-algorithms as the
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.23]{duan_maze.png}
+        \includegraphics[scale=.20]{duan_maze.png}
   }}
   \caption{Visualization of the agent’s behavior. In each scenario, the agent starts at the center of the
   blue block, and the goal is to reach anywhere in the red block.  
@@ -334,6 +420,9 @@ more from :  \newline
 Meta-SGD: Learning to Learn Quickly for Few-Shot Learning (Li et al.) \newline
 Meta-learning in Reinforcement Learning (Schweighofer and Doya) \newline
 Learning to Learn without Gradient Descent by Gradient Descent (Chen et al.)
+Learning Transferable Architectures for Scalable Image Recognition (Zoph et al.)
+OPTIMIZATION AS A MODEL FOR FEW-SHOT LEARNING (Ravi and Larochelle)
+One-Shot Imitation Learning (Duan et al.)
 
 \subsection{Speed Improvement and Few-Shot Learning}
 
