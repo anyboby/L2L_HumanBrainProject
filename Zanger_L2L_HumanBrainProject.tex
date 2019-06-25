@@ -99,7 +99,7 @@ $$
 s_j(t) = f(net_j(t)) \eqno{(1)}
 $$
 $$
-net_j(t) = \sum_i^l x_i(t)v_{ji} + sum_h^ms_h(t-1)u_jh + b_j \eqno{(2)}
+net_j(t) = \sum_i^l x_i(t)v_{ji} + \sum_h^ms_h(t-1)u_jh + b_j \eqno{(2)}
 $$
 $$
 y_k(t) = g(net_k(t)) \eqno{(3)}
@@ -108,20 +108,53 @@ $$
 net_k(t) = \sum_j^m s_j(t)w_{kj} + b_k \eqno{(4)}
 $$
 
-In order to minimize the loss of our network, we define the widely used summed squared error as 
-a loss function with desired outputs $d$, total number of training samples $n$ and the number of 
-output units $o$. For computational reasons, the stochastic version of gradient descent utilizes 
-only subsets of our training collection, up to the extremum where $p=n$. 
 
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.18]{rnn_guo.png}
-        \includegraphics[scale=.18]{rnn_unfolded_guo.png}
+        \includegraphics[scale=.35]{rnn_unfolded_guo.png}
   }}
-  \caption{left: a simple RNN model with loop \newline right: An Unrolled RNN (Guo) (colah.github.io)}
+  \caption{An Unrolled RNN with shared weight Matrices $U$ and $V$ between temporal states (Guo) (colah.github.io)}
         \label{figurelabel}
      \end{figure}
+
+
+In order to minimize the loss of our network, we define the widely used summed squared error (5) as 
+a loss function with desired outputs $d$, total number of training samples $n$ and the number of 
+output units $o$. For computational reasons, the stochastic version of gradient descent utilizes 
+only subsets of our training collection, up to the extremum where $p=n$. 
+$$
+E = \frac{1}{2}\sum_p^n \sum_k^o (d_{pk} - y_{pk})^2 \eqno{(5)}
+$$
+
+By propagating this error backwards throughout the network, we can construct the loss functions
+derivative with respect to each weight in order to obtain the weight update of a specific weight 
+for the next timestep. Applying the chain rule, the weight updates for connections between hidden and output 
+layer $\Delta w_{kj}$ are denoted in (6) and for connections between input and hidden layer $\Delta w_{ji}$ 
+in (7):
+
+$$
+\Delta w_{kj} = \eta \sum_p^n \delta_{pk}s_{pj}=\eta \sum_p^n (d_{pk}-y_{pk})g'(net_{pk})s_{pj} \eqno{(6)}
+$$
+
+$$
+\Delta w_{ji} = \eta \sum_p^n \delta_{pj}x_{pi}=\eta \sum_p^n\sum_k^o\delta_{pk}w_{kj}f'(net_{pj})x_{pi} \eqno{(7)}
+$$
+
+The terms $\delta_{pk}$ and $\delta_{pj}$ are referred to as the components of the specific error vectors 
+per layer.
+The netfunction of our hidden layer $net_{pj}$ however still depends on the previous state $s_{t-1}$ which in turn 
+depends on previous states itself. Unfolding the network up to a temporal depth $\tau$ with the same weights 
+throughout the timesteps (fig.x) allows us to define an error vector for previous time steps as seen in (8).
+$$
+\delta_{pj}(t-1)= \sum_h^m \delta_{ph}(t)u_{hj}f'(s_{pj}(t-1)) \eqno{(8)}
+$$
+More detailed reflections on the construction of the above equations can be found in (Guo,2013).
+The procedure previously used to obtain $delta_{pj}(t-1)$ allows for theoretically arbitrary depths $\tau$
+to be recursively calculated. In practice, large values for $\tau$ and the subsequently generated 
+long-term dependencies tend to be difficult to handle with gradient descent. This is due to the fact, that
+deriving error terms through multiple layers of an unfolded RNN de- or increases the magnitude of the resulting 
+derivative expontially, thus creating phenomena known as vanishing and exploding gradient. 
 
 
 @draft 
