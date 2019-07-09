@@ -195,7 +195,7 @@ output regulation within a single cell, as seen in fig. x.
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.35]{LSTM3-chain.png}
+        \includegraphics[scale=.265]{LSTM3-chain.png}
   }}
   \caption{(has to be edited) Inner composition of an LSTM cell (colah.github.io)}
         \label{figurelabel}
@@ -211,18 +211,22 @@ for replacing the current (possibly forgotten) cell state $C_{t-1}$ with $i_t\ti
 set of weights and biases $W_i$, $b_i$, $W_c$ and $b_c$, leaving us with the respective layer outputs (12) and (13) (colah.github.improving):
 $$
 i_t = \sigma(W_i\times[h_{t-1},x_t]+b_i)  \eqno{(12)}
+$$
+$$
 \tilde{C_t}=tanh(W_c\times[h_{t-1},x_t]+b_c) \eqno{(13)}
 $$
 In order to determine whether to inhibit possibly disturbing signals to following cell states, the output $h_{t}$ is filtered by applying $tanh(x)$ and 
 multiplying with the outcome of the $output gate layer o_t$ with weights $W_o$ and biases $b_o$ and results in the total output $h_t$:
 $$
 o_t = \sigma(W_o[h_{t-1}, x_t] + b_o) \eqno{(14)}
+$$
+$$
 h_t = o_t \times tanh(C_t) = o_t\times tanh(f_t\times C_{t-1}+i_t\times\tilde{C_t}) \eqno{(15)}
 $$
 This design allows for seperate read and write capabilities and therefore enables capture of error signals within
 the cell for longer periods of time than previously possible with standard RNNs (Hochreiter et al.). Many applications with
 record-breaking performances followed, thus proving the state-of-the-art standing of LSTMs in temporal problems. Graves and Jaitly provide an   
-overview over variations of the vanilla LSTM, such as the introduction of peepholes by Gers & Schmidhuber or the lighter Gated Recurrent Unit (GRU) 
+overview over variations of the vanilla LSTM, such as the introduction of peepholes by Gers and Schmidhuber or the lighter Gated Recurrent Unit (GRU) 
 by Cho et al. Furthermore, attention-based models as proposed by Graves et al. (Natural Turing Machines), Graves et al.(Adaptive RNNs) 
 and Neelakantan et al. () are promising more recent developtments in the field of RNNs.
 
@@ -284,10 +288,10 @@ still being researched, whereas various methods have been introduced in Neurosci
 Whilst conventional neural networks employ a stochastic version of gradient descend to backpropagate erros throughout the network, the same approach
 is difficult to apply in the realm of SNNs due to their temporal dependance and the non-differentiability of spike trains. Whereas multiple learning
 rules adressing SNNs exist (such as Hebbian Rule, Binarization of ANNs, Conversion from ANNs and Variations of backpropagation (Pfeiffer and Pfeil)), 
-a state-of-the-art algorithm such as backpropagation is yet to be emerge. We will focus on a more 
-biologically realistic training rule called spike-timing-dependant plasiticy (STDP). The key feature of this approach is 
+a state-of-the-art algorithm such as backpropagation has yet to emerge. We will focus on a more 
+biologically motivated training rule called spike-timing-dependant plasiticy (STDP). The key feature of this approach is 
 to adjust weights between a pre- and post-synaptic neuron according to their relative spike times within an interval of roughly tens of 
-milliseconds in length (S. Bohte, J. Kok)
+milliseconds in length (S. Bohte, J. Kok). Consequently a 
 ... more on STDP 
 
 \subsubsection{Backpropagation and Feedback-alignment}
