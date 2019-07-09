@@ -285,19 +285,61 @@ still being researched, whereas various methods have been introduced in Neurosci
 
 \subsection{Learning in Spiking Neural Networks - Synaptic Plasiticity}
 
-Whilst conventional neural networks employ a stochastic version of gradient descend to backpropagate erros throughout the network, the same approach
+While conventional neural networks employ a stochastic version of gradient descend to backpropagate erros throughout the network, the same approach
 is difficult to apply in the realm of SNNs due to their temporal dependance and the non-differentiability of spike trains. Whereas multiple learning
 rules adressing SNNs exist (such as Hebbian Rule, Binarization of ANNs, Conversion from ANNs and Variations of backpropagation (Pfeiffer and Pfeil)), 
-a state-of-the-art algorithm such as backpropagation has yet to emerge. We will focus on a more 
+a state-of-the-art algorithm such as backpropagation has yet to emerge. We will first focus on a more 
 biologically motivated training rule called spike-timing-dependant plasiticy (STDP). The key feature of this approach is 
 to adjust weights between a pre- and post-synaptic neuron according to their relative spike times within an interval of roughly tens of 
-milliseconds in length (S. Bohte, J. Kok). Consequently a 
-... more on STDP 
+milliseconds in length (S. Bohte, J. Kok). If a postynaptic neuron fires shortly after its presynaptic neuron, the connecting weights is strengthended
+whereas presynaptic neurons firing after the postsynaptic neuron will lead to weakening of the weights. The experimentally refined and 
+commonly used formula according to (Y. Dan and M.-M. Poo) for the exact weight updates is given in (16)
+$$
+\Delta w = \left\{
+        \begin{array}{ll}
+            Ae^{\frac{-(|t_{pre}-t_{post}|)}{r}} & \quad t_{pre}-t{post}\leq 0, A>0 \\
+            Be^{\frac{-(|t_{pre}-t_{post}|)}{r}} & \quad t_{pre}-t{post}>0, B<0
+        \end{array} 
+    \right. 
+    \eqno{(16)}
+$$ 
 
-\subsubsection{Backpropagation and Feedback-alignment}
+where $\delta w$ is the update of the weight $w$ with adjustable learning rates $A$, $B$ and pre/postsynaptic fire times $t_{pre}$/$t_{post}$. A 
+related rule to STDP is the more general hebbian learning rule, which in contrast to STDP claims, that synaptic efficiacy arises from the 
+general temporal proximity of these signals independant from the order of occurence. This rule is often referred to as "fire-together-wire-together".
+Both mentioned approaches are illustrated in Fig. x 
 
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.24]{stdp_hebbian2.png}
+  }}
+  \caption{left: illustration of weight-updates $\Delta w_{ij}$ with presynaptic neuron $i$ and postsynaptic neuron $j$ according to STDP
+  right: symmetric hebbian learning rule with weight update $\Delta w_{ij}$, presynaptic neuron $i$ and postsynaptic neuron $j$}
+        \label{figurelabel}
+\end{figure}
+
+The above mentioned learning rules share the common characteristic in which they don't require information other than what is available 
+in a local neighborhood of neurons. Therefore they do not require the transport of weight information throughout numerous layers of neurons, which
+has been shown to be biologically unrealistic Samadi et al.(Chinta and Tweed, 2012; Crick, 1989; Grossberg, 1987; Kolen and Pollack, 1994; Levine, 
+2000; Rolls and Deco, 2002; Stork, 1989). Consequently, these learning rules are suited for unsupervised learning tasks and pose interesting 
+insights from a neuroscientific standpoint. Guyonneau et al. (Tavanaei et al.) showed, that STDP-equipped SNNs are capable of learning input 
+patterns and decrease latencies between in- and output throughout training. Furthermore, T. Masquelier and S. R. Kheradpisheh point out, that 
+the increased density of encoded information in SNNs allows even a single neuron to learn spatio-temporal patterns. However practical usability
+of these learning rules raises the need for proper supervised learning algorithms, often clashing with mathematical feasibility, numerical efficiency 
+or biological plausability. In this, we encouter problems, such as the underivability of spikes and the biological abscence of outer error 
+signals in deeper layers. These challenges remain generally unsolved, however variuous promising advances have been proposed in tackling them.
+In a rather biological aspect, Markov et al. propose the existance of feedback connections, designed to project information within
+hierarchically organized networks. Approaches such as SpikeProp by Bohte and Kok deal with discontinous nature of spiking neurons by linearizing 
+the relationship between post-synaptic input and the resulting spiking time, consequently circumventing the discontinuity of the 
+thresholding function (Bohte and Kok). Further techniques aiming at surrogating the gradient of discontinuous activations have been researched 
+and tested by Neftci et al.
 
 \subsubsection{Error Feedback}
+Mysteriously, the ...
+
+\subsubsection{Feedback-alignment}
+
 
 \subsection{Performance of SNNs)}
 
