@@ -168,6 +168,64 @@ these problems, and certain types of RNNs (like LSTMs) were specifically designe
 
 \subsection{Long Short Term Memory (LSTM)}
 
+The previously described problems occuring when facing long term dependencies in RNNs are successfully 
+tackled by the Long Short Term Memory (LSTM), first introduced by Hochreiter and Schmidhuber. As shown by Hochreiter 1991, 
+A key idea towards avoiding the explosion or vanishing of gradients through a large number of timesteps is 
+to enforce a constant errorflow through a single unit $j$ by requiring the net activation derivative of $j$ to follow 
+equation 9 with weight $w_{jj}$ of a single connection to itself.
+$$
+f'_j(net_j(t))w_{jj}=1.0 \eqno{(9)}
+$$
+Simple integration over time gives us $f_j(net_j(t))=\frac{net_j}{w_{jj}}$, a linear function. Therefore our recurrent 
+definition of $net_j(t+1)=w_{jj}y^j(t)$ leads us to the conclusion 10, that the unit $j$'s activation has to remain constant 
+(Hochreiter and Schmidhuber 1997):
+$$
+y_j(t+1)=f_j(net(t+1))=f_j(w_{jj}y^j(t))=y^j(t) \eqno{(10)}
+$$
+
+This approach alone however leads to a problem that becomes evident during learning in networks with more than one neuron
+connected to the so far single unit $j$. The input weights $w_{ji}$ from neuron $i$ and the outgoing weights $w_{kj}$ to neuron $k$ now are 
+both responsible for regulating the desired protection from yet unneeded information of previous timesteps as well as conceiving said information
+when deemed necessary. Take for instance a language processing network trying to estimate the importance of a recently heard subject "You", regarding
+the following words "are a tall, friendly, level-headed, smart person". The same weights that have just been trained on this sentence would receive 
+very conflicting weight updates in the next learning step, when confronted with the new sentence "You are a person". \newline
+To overcome this shortcoming, Hochreiter and Schmidhuber propose a more context sensitive approach, using seperate gates for forgetting, input and
+output regulation within a single cell, as seen in fig. x.   
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.35]{LSTM3-chain.png}
+  }}
+  \caption{(has to be edited) Inner composition of an LSTM cell (colah.github.io)}
+        \label{figurelabel}
+     \end{figure}
+
+The $forget gate$ consists of a sigmoid-activated layer $f_t$, essentially determining, how much of the previous output $h_{t-1}$ should be kept 
+within the LSTM Cell State $C_t$, based on its own set of weights $W_f$ and biases $b_f$:
+$$
+f_t = \sigma(W_f\times[h_{t-1},x_{t}] + b_f) \eqno{(11)}
+$$ 
+The $input gate$ is composed of the sigmoid-activated layer $i_t$ and the hyperbolic-tangent-activated layer $\tilde{C_t}$, creating candidates
+for replacing the current (possibly forgotten) cell state $C_{t-1}$ with $i_t\times\tilde{C_t}$. Each of these layers, again, have their own 
+set of weights and biases $W_i$, $b_i$, $W_c$ and $b_c$, leaving us with the respective layer outputs (12) and (13) (colah.github.improving):
+$$
+i_t = \sigma(W_i\times[h_{t-1},x_t]+b_i)  \eqno{(12)}
+\tilde{C_t}=tanh(W_c\times[h_{t-1},x_t]+b_c) \eqno{(13)}
+$$
+In order to determine whether to inhibit possibly disturbing signals to following cell states, the output $h_{t}$ is filtered by applying $tanh(x)$ and 
+multiplying with the outcome of the $output gate layer o_t$ with weights $W_o$ and biases $b_o$ and results in the total output $h_t$:
+$$
+o_t = \sigma(W_o[h_{t-1}, x_t] + b_o) \eqno{(14)}
+h_t = o_t \times tanh(C_t) = o_t\times tanh(f_t\times C_{t-1}+i_t\times\tilde{C_t}) \eqno{(15)}
+$$
+This design allows for seperate read and write capabilities and therefore enables capture of error signals within
+the cell for longer periods of time than previously possible with standard RNNs (Hochreiter et al.). Many applications with
+record-breaking performances followed, thus proving the state-of-the-art standing of LSTMs in temporal problems. Graves and Jaitly provide an   
+overview over variations of the vanilla LSTM, such as the introduction of peepholes by Gers & Schmidhuber or the lighter Gated Recurrent Unit (GRU) 
+by Cho et al. Furthermore, attention-based models as proposed by Graves et al. (Natural Turing Machines), Graves et al.(Adaptive RNNs) 
+and Neelakantan et al. () are promising more recent developtments in the field of RNNs.
+
 @draft 
 LSTMs don’t have a fundamentally different architecture from RNNs, but they use a different 
 function to compute the hidden state. The memory in LSTMs are called cells and you can think 
@@ -181,18 +239,18 @@ units are very efficient at capturing long-term dependencies.
 
 \section{SPIKING NEURAL NETWORKS (SNN)}
 
-Second generation neural networks, as commonly described in the literature, base their neurons activation on various continuous functions 
-and allow a larger space of operations. Maass et al. (Maass et al.) introduced a third setup for 
-designing neural network models. This setup is based on a neuron model that integrates a different conception on how neurons are activated,
-thus allowing a more accurate representation of biological neurons and their inner workings. This model of Spiking Neural Networks (SNN) employs
-integrate-and-fire neurons (Maass et al.) which allow timing of activation pulses and therefore a potentially higher capability of representing 
-information. 
+The above described ANN models differ from Feedforward Networks in regards of activation, connection design, learning rules and more, yet implicitly
+share a commonground in how they encode information in their neurons. These second generation neural networks, as commonly described in the literature,
+activate on continuous functions and make use of their derivability in backpropagation. Maass et al. (Maass et al.) provide a setup that
+integrates a different, biologically more accurate take on modelling neuron activation. These Spiking Neural Networks (SNN) employ
+integrate-and-fire neurons (Maass et al.) which encode information with an additional temporal factor in its activation pulses, increasing
+the density of encoded information.  
 
 \subsection{Neurons - Activation and Signal Processing} 
 
 The process of signal transportation within biological neurons ...(figures and Gruning and Bohte)\newline
 
-The fundemantal idea behind the computational units of an SNN revolves around integrating a temporal factor 
+The fundemantal idea behind the computational units of an SNN builds on integrating a temporal factor 
 in the representation of information. Various models of these spiking neurons, such as the integrate-and-fire model (Abbott), 
 the Hodgkin-Huxley model (Hodgkin and Huxley), the model by Izhikevich (Izhikevich) and the Spike Response Model by Gerstner (Gerstner) 
 exist and vary in their attempt to trade off biological accuracy and computational complexity (Grunte and Bohte).
@@ -200,16 +258,16 @@ The Leaky-Integrate-and-Fire model is nowadays the most widespread apporach due 
 The representation of the activation process of the neron is modeled by an electrical circuit in which the membrane potential, threshold voltage,
 resting potential and leak rate are realized through a capacitor, gate, battery and resistance respectively. (Abbott and fig. Ponulak)
 \newline
-At any moment, an LIF neuron has a drive v, which depends on its bias
-current, b; its inputs a(in)j (where the index j runs from 1 to the number
-of inputs); and its synaptic weights, Wj (Eliasmith and Anderson, 2002). (... and so on)
+At any moment, an LIF neuron has a drive $v$, which depends on its bias
+current $b$; its inputs $a(in)_j$ (where the index $j$ runs from 1 to the number
+of inputs); and its synaptic weights, $W_j$ (Eliasmith and Anderson, 2002). (... and so on)
 
 \subsection{Spike-based Neural Codes}
 
 Whilst encoding and decoding of the desired information is much simpler and intuitive in second generation neural network models,
-this is a larger challenge for the time-dependent neurons in an SNN, as there is an arbitrary 
+this is a larger challenge for the time-dependent neurons in an SNN, due to the arbitrary 
 number of theorically possible ways of encoding information in the neurons. In fact the biological process of information decoding is 
-still being researched, whereas various methods have been introduced Neuroscience Enginering.
+still being researched, whereas various methods have been introduced in Neuroscience Engineering.
 
 \begin{itemize}
 
@@ -219,16 +277,15 @@ still being researched, whereas various methods have been introduced Neuroscienc
         \item Fully temporal codes are a more general term which includes the above mentioned approaches. It encodes information based on the precise
         timing of each spike in a spike train. (Gruning and Bohte)
         \item Gaussian Coding applies a gaussian distribution over recorded spikes of each neuron and encodes information based on their stochastic occurence.
-        \item ...
-        
 \end{itemize}        
 
 \subsection{Learning in Spiking Neural Networks - Synaptic Plasiticity}
 
 Whilst conventional neural networks employ a stochastic version of gradient descend to backpropagate erros throughout the network, the same approach
 is difficult to apply in the realm of SNNs due to their temporal dependance and the non-differentiability of spike trains. Whereas multiple learning
-rules adressing SNNs exist (such as Hebbian Rule, Binarization of ANNs, Conversion from ANNs and Variations of backpropagation (Pfeiffer and Pfeil)), a more 
-biologically realistic training rule is introduced with the spike-timing-dependant plasiticy (STDP). The key feature of this approach is 
+rules adressing SNNs exist (such as Hebbian Rule, Binarization of ANNs, Conversion from ANNs and Variations of backpropagation (Pfeiffer and Pfeil)), 
+a state-of-the-art algorithm such as backpropagation is yet to be emerge. We will focus on a more 
+biologically realistic training rule called spike-timing-dependant plasiticy (STDP). The key feature of this approach is 
 to adjust weights between a pre- and post-synaptic neuron according to their relative spike times within an interval of roughly tens of 
 milliseconds in length (S. Bohte, J. Kok)
 ... more on STDP 
