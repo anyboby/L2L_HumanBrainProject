@@ -317,10 +317,14 @@ in this framework draw their learning experience from the reward information gen
 the RNN holds information on the previously chosen action and the subsequent rewards. However the process of learning
 in each of these loops is realized differently and results in specializations of different scopes. While the wrapping RL-algorithm used to 
 optimize the weights of the RNN operates over the entire set of episodes, that is to say all MDPs $M$, learning of the nested RNN 
-within a single task $m$ is based on the inner recurrent dynamics of the network. The policy outputs $\pi$ of this network can 
+within a single task $m$ is based on the inner recurrent dynamics of the network. Notably, the RNN 
+is able to encode learned experience on a specific task using only its inner memory variables, leaving us with the observation
+that a well working short-term memory is a key factor to learning on different levels of abstraction. 
+The policy outputs $\pi$ of this network can then
 be viewed as an RL-algorithm on its own, resulting in the name meta-RL. For the implementation of this framework Wang et al. 
-used a LSTM according to Hochreiter and Schmidhuber (Hochreiter and SChmidhuber, 1997) to account for the inner RNN, while both synchronous 
-asynchronous advantage actor critics (A2C and A3C) (Mnih et al.) were employed to learn its parameters. The observation vectors of experiment environments
+used an LSTM according to Hochreiter and Schmidhuber (Hochreiter and SChmidhuber, 1997) to account for the inner RNN, while both synchronous 
+asynchronous advantage actor critics (A2C and A3C) (Mnih et al.) were employed to learn inter-cell weights.
+The observation vectors of experiment environments
 were either directly fed to the LSTM one-hot-encoded or passed through an additional deep encoder model (Wang et al.). 
 Experiments on a series of bandit problem and two
 MDP-centered problems with implementation architectures as described above showed, that meta-RL delivers 
@@ -361,21 +365,40 @@ Learning to Learn Using Gradient Descent (Hochreiter et al.)
 When applied to Networks of Spiking Neurons, the previously described framework of L2L offers a promising alternative
 to common approaches which embed a series of biologically implausible ingredients. One major biological implausibility
 in learning algorithms employing error feedback is suggested by evidence, that real neurons almost certainly lack weight transport
-when unrolling the chain rule of backpropagation on the backward pass. (Samadi et al., Chinta and Tweed) In order to calculate gradients
+when unrolling the chain rule of backpropagation on the backward pass. (Samadi et al., Chinta and Tweed 2012, Crick 1989, Grossberg 1987) In order 
+to calculate gradients
 of an error at the outputs of a network, these neurons would have to maintain information about the strenth of synapses outside their local
 neighborhood, which seems unrealistic from a biological point of view. This evidence suggests the existence of a more sophisticated 
 system of learning signals, which dont require information on global synaptic weights. Furthermore, oversimplistic models of real
-neurons, such as the Leaky integrate-and-fire neuron, lack key characteristics of real neurons. Among these mismatches between 
+neurons, such as the Leaky integrate-and-fire neuron, lack key characteristics of real neurons and are often even further modified by engaging
+derivative surrogate functions in order to deal with the non-differentiable nature of spiking neurons. Among these mismatches between 
 biological neurons and their artifical models is the ability of biological neurons, to adapt to previously experienced inputs
-and weights (Samadi et al.). The ability to adapt to previous spikes of presynaptic neurons however not only represents a mere visual
+and weights (Samadi et al.). The ability to adapt to previous spikes of presynaptic neurons however not merely represents a visual
 difference but can be interpreted as the ability to store temporal information. \newline
 By deploying adaptive LIF neurons in a Network of Spiking Neurons, Bellec et al. were able to overcome not only a 
 discrepancy between model and reality but also achieved a well working long short-term memory, thus creating a new type of Recurrent
-Network of Spiking Neurons, the LSNN. 
+Network of Spiking Neurons, the LSNN. The adaptivity of neurons is here realized by increasing the firing threshold $B_j(t)$ of a neuron $j$
+by a fixed amount $\frac{\beta}{\tau_{a,j}}$ for incoming spikes and decaying it exponentially to a baseline value in spike-free intervals 
+with time constant $\tau_{a,j}$. The time constant can be chosen to fit the desired range of the created short-term memory. For discrete timesteps
+of $\delta t = 1 ms$ the dynamics of the adaptive threshold becomes:
 
 
 
+As pointed out in the meta-RL, a well-working short-term memory is crucial to the ability to store learned experience on different levels
+of abstraction and now allows for the application of L2L to a network of spiking neurons. 
+The network 
+architecture comprises additional sets of non-adaptive excitatory and inhibitory LIF neurons(Bellec et al., s. fig. x). Very similarly to 
+Wangs et al., the synaptic weights of this network are subject to optimization of an outer loop algorithm, in this case a combination of
+BPTT and a biologically inspired rewiring method called DEEP R (Bellec et al. LSTM L2l and Bellec DEEP wiring, fig. x).\newline
 
+These results might already offer interesting perspectives from a biological and neuroscientific view, especially considering the formerly
+exlusively human ability to 
+learn on different levels of abstraction. However one is tempted to wonder if
+this framework can be applied to more biologically plausible models on a technical level. Recall, that the previously described setup including BPTT
+still requires the transport of global weight information as well as a transmission of error signals through time which are 
+widely considered implausible in real RNNs (Samadi et al., Chinta and Tweed 2012, Crick 1989, Grossberg 1987). 
+
+     
 tbd \dots
 Long short-term memory and Learning-to-learn in networks of spiking neurons (Bellec et al.)
 Biologically inspired alternatives to backpropagation through time for learning in recurrent neural nets (Bellec et al.)
@@ -465,6 +488,36 @@ indicate that further imporvements might come with improved RL-algorithms as the
   }
         \label{figurelabel}
      \end{figure}
+
+Bellec et al. tested an implementation of LSNN on a navigational task in a 2D arena in reinforcement learning to demonstrate applicability in 
+complex environments. The LSNN-based agent was palced in a circular arena in which a specific task $M$ would be to reach a goal within this arena
+on a fixed position, while the whole family $F$ of tasks would include various goal positions within this arena. By setting these goal positions 
+to be close to the arena boundaries, the agent is challenged to develop an abstract understanding of the commonalities between all tasks, 
+which he can exploit when facing one of the tasks $M$. For each of these specific tasks, the objective is 
+to reach the goal (at a fixed position throughout one task $M$) as many times as possible within a fixed time frame after being placed randomly
+upon reaching the goal. The according sparse reward function was chosen to award goal attainment with a score of 1 while hitting the arena
+boundaries will lead to -0.02 punishment. According to the applied L2L framework, outer-loop optimization through BPTT and DEEP-R was performed on the
+synaptic weights over the whole task family $F$, while specific task optimization was accomplished by 
+adapting the short-term memory, i.e. the thresholds of the adaptive LIF neurons. Remarkably this model was able to generate an abstract understanding
+of the characteristic of the task, exhibiting human-like strategies to first explore the boundaries of the given environment to find the goal 
+position and utilizing this knowledge to efficiently reach the goal in subsequent runs(fig. x). 
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.24]{lsnn_combined.png}
+}}
+\caption{\textbf{A:} Basic architecture of LSNN. Percentages on sypatic connections represent connectivity of the LSNN after applying DEEP R 
+in conjunction with BPTT. 
+Populations X,Y and R of regular spiking LIF neurons coupled with 
+a population A of adaptive LIF neurons. (Bellec et al.) \newline
+\textbf{B:} Top: the untrained model does not show any strategic or efficient way to find the goal. Bottom:
+The trained model performs initial exploration runs alongside environment boundaries, exhibiting the abstract understanding
+that all tasks of family $F$ share the characteristic of goals close to the arena boundaries. Efficient path-planning of the agent 
+in the subsequent runs prove, that the adaptive LIF neurons were capable of storing the position of the goal in short-term memory. (Bellec et al.)}
+        \label{figurelabel}
+        \end{figure}
+
+
 
 more from :  \newline
 Meta-SGD: Learning to Learn Quickly for Few-Shot Learning (Li et al.) \newline
