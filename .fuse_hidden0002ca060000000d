@@ -1,0 +1,50 @@
+\relax 
+\@writefile{toc}{\contentsline {section}{\numberline {I}INTRODUCTION}{1}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}RECURRENT NEURAL NETWORKS (RNNS)}{1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-A}Training RNNs}{1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Unrolled RNN (colah.github.io)}}{1}}
+\newlabel{figurelabel}{{1}{1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces An Unrolled RNN with shared weight Matrices $U$ and $V$ between temporal states (Guo) (colah.github.io)}}{1}}
+\newlabel{figurelabel}{{2}{1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Long Short Term Memory (LSTM)}{2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces (has to be edited) Inner composition of an LSTM cell (colah.github.io)}}{2}}
+\newlabel{figurelabel}{{3}{2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-C}Attention and Augmented Recurrent Neural Networks}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}SPIKING NEURAL NETWORKS (SNN)}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Neurons - Activation and Signal Processing}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Spike-based Neural Codes}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-C}Learning in Spiking Neural Networks - Synaptic Plasiticity}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textbf  {A: } illustration of weight-updates $\Delta w_{ij}$ with presynaptic neuron $i$ and postsynaptic neuron $j$ according to STDP \newline  \textbf  {B: } symmetric hebbian learning rule with weight update $\Delta w_{ij}$, presynaptic neuron $i$ and postsynaptic neuron $j$}}{4}}
+\newlabel{figurelabel}{{4}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-D}Error Feedback and Feedback-alignment}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-E}Eligibility Traces}{4}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}LEARNING TO LEARN (L2L)}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \textbf  {A:} Eligibility function fc(t). Illustrated are values for a pre-/postsynaptic spike pattern. Negative for post-/presynaptic spike patterns. \newline  \textbf  {B:} Contributions of spike patterns (red and green) to an eligibility trace $c(T)$ and the according weight update $w(t)$ upon reception of a reward $d(t)$.(Legenstein et al. 2008) }}{5}}
+\newlabel{figurelabel}{{5}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Types of learning-to-learn in AI. Learning-to-learn can be roughly divided into learning to optimize and structure learning. In AI, hyperparameter optimization is an example of learning to optimize (Maclaurin et al. 2015), while a recurrent neural network taking rewards, actions and observations can often be used to perform structure learning (Wang et al.)(Landsell et al.).}}{5}}
+\newlabel{figurelabel}{{6}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}Learning to Reinforcement Learn (metal-RL) and RL²}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Schematic of Meta-reinforcement Learning, Illustrating the Inner and Outer Loops of Training. The outer loop trains the parameter weights $\theta $, which determine the inner-loop learner (’Agent’, instantiated by a recurrent neural network) that interacts with an environment for the duration of the episode. For every cycle of the outer loop, a new environment is sampled from a distribution of environments, which share some common structure (Botvinick et al.).}}{6}}
+\newlabel{figurelabel}{{7}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Advantage actor-critic with recurrence. In all architectures, reward and last action are additional inputs to the LSTM. For non-bandit environments, observation is also fed into the LSTM either as a one-hot or passed through an encoder model [3-layer encoder: two convolutional layers (first layer: 16 8x8 filters applied with stride 4, second layer: 32 4x4 filters with stride 2) followed by a fully connected layer with 256 units and then a ReLU non-linearity. See for details Mirowski et al. (2016)]. For bandit experiments, current time step is also fed in as input. π = policy; v = value function. A3C is the distributed multi-threaded asynchronous version of the advantage actor-critic algorithm (Mnih et al., 2016); A2C is single threaded. (a) Architecture used in experiments 1-5. (b) Convolutional-LSTM architecture used in experiment 6. (c) Stacked LSTM architecture with convolutional encoder used in experiments 6 and 7 (Wang et al.)}}{6}}
+\newlabel{figurelabel}{{8}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}L2L in the Context of Spiking Neural Networks}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Basic architecture of LSNN. Percentages on sypatic connections represent connectivity of the LSNN after applying DEEP R in conjunction with BPTT. Populations X,Y and R of regular spiking LIF neurons coupled with a population A of adaptive LIF neurons. (Bellec et al.)}}{7}}
+\newlabel{figurelabel}{{9}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Illustration of the error signal flow throgh network layers. Evidently, e-prop 1 does not require information transport in a backwards pass. (ill. from Bellec et al. 2019) }}{7}}
+\newlabel{figurelabel}{{10}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Basic architecture of e-prop 1. Error broadcasts are calculated online at the output layer and sent directly to deeper layers of the RSNN, avoiding the necessity for weight transport on the backwards pass.(ill. from Bellec et al. 2019) }}{8}}
+\newlabel{figurelabel}{{11}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces  Basic architecture of e-prop 2. An Error module network receives network inputs, a target state and the network state to produce learning signals optimized to improve learning in a nested RSNN (ill. from Bellec et al. 2019). }}{8}}
+\newlabel{figurelabel}{{12}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces  MLP architecture of meta-plasticity with inputs $\mathbf  {(x)}$, one hidden layer of seven neurons and parameters $\theta $. The network outputs the weight updates for the agent-network. (ill. edited from Bohnstingl et al.). }}{9}}
+\newlabel{figurelabel}{{13}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}Implications for Neuroscience and Psychology}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}APPLICATIONS OF L2L IN ROBOTICS}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {V-A}Tasks in high-dimensional spaces}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces a) view of I-maze showing goal object in one of the 4 alcoves b) following initial exploration (light trajectories), agent repeatedly goes to goal (blue trajectories) c) Performance of stacked LSTM (termed “Nav A3C”) and feedforward (“FF A3C”) architectures, per episode (goal = 10 points) averaged across top 5 hyperparameters. e) following initial goal discovery (goal hits marked in red), value function occurs well in advance of the agent seeing the goal which is hidden in an alcove. }}{10}}
+\newlabel{figurelabel}{{14}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Visualization of the agent’s behavior. In each scenario, the agent starts at the center of the blue block, and the goal is to reach anywhere in the red block. (dual et al.) }}{10}}
+\newlabel{figurelabel}{{15}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {V-B}Few-Shot Learning}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces \textbf  {A:} The untrained model does not show any strategic or efficient way to find the goal. (Bellec et al.) \newline  \textbf  {B:} The trained model performs initial exploration runs alongside environment boundaries, exhibiting the abstract understanding tha

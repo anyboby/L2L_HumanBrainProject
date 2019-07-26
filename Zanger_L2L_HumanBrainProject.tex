@@ -27,7 +27,7 @@ Learning to Learn in the Context of Spiking Neural Networks
 }
 
 
-\author{Moritz Zanger$^{1}$ % <-this % stops a space
+\author{Moritz Zanger - supervised by J. Camilo Vasquez Tieck $^{1}$ % <-this % stops a space
 \thanks{*This work was not supported by any organization}% <-this % stops a space
 \thanks{$^{1}$Moritz Zanger, Faculty of Mechanical Engineering, Karlsruhe Institute of Technology
         {\tt\small zanger.moritz@googlemail.com}}%
@@ -59,28 +59,28 @@ Introduction to the topic
 \section{RECURRENT NEURAL NETWORKS (RNNS)}
 Artificial Neural Networks (ANNs) are networks of biologically inspired computational units , neurons, that learn 
 according to certain learning rules thus improving their ability to perform a desired task, often classification or regression 
-problems. Accordingly, the performance demonstrated by ANNs is based on knowledge, inferred from data (Schuster and Paliwal).
+problems. Accordingly, the performance demonstrated by ANNs is based on knowledge, inferred from data \cite{schusterBidirectionalRecurrentNeural1997}.
 Many of the data driven problems in engineering involve the recognition of time dependent patterns (e.g. speech
 recognition, machine translation, machine vision in real-time video material), requiring special
-network architectures such as the Time-Delay Neural Networks (TDNN, Waibel et al.) or Recurrent Neural Networks (RNNs). 
+network architectures such as the Time-Delay Neural Networks (TDNN) \cite{waibelPhonemeRecognitionUsing1989} or Recurrent Neural Networks (RNNs). 
 The latter revolve around the basic idea of including a loop in the networks neurons, allowing information to be passed 
 from past steps of the networks state to the next. 
 
 \subsection{Training RNNs}
 Unfolding an RNN over time results in a more approachable representation of this model as seen in fig. x. Training a 
 model of this structure can now be achieved in a similar way to the well-known backpropagation algorithm with the additional 
-ability to encode longer past information (Paul J. Werbos). 
+ability to encode longer past information \cite{werbosBackpropagationTimeWhat1990}. 
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
         \includegraphics[scale=.22]{RNN-unrolled.png}
         
   }}
-  \caption{Unrolled RNN (colah.github.io)}
+  \caption{Unrolled RNN \cite{UnderstandingLSTMNetworks}}
         \label{figurelabel}
      \end{figure}
 
-The notation of symbols in the following is according to Jian Guo. The inputs are denoted by vector $\mathbf{x}$,
+The notation of symbols in the following is according to Jian Guo \cite{guoBackPropagationTime2013}. The inputs are denoted by vector $\mathbf{x}$,
 with components indexed by $i$. We similarly define the current hidden layer state as vector $\mathbf{s}$, components indexed 
 by $j$, the previous hidden layer state as vector $\mathbf{s}(t-1)$, components indexed by $h$,
 the output layer as vector $\mathbf{y}$, components indexed by $k$. 
@@ -114,7 +114,8 @@ $$
         \framebox{\parbox{3in}{
         \includegraphics[scale=.35]{rnn_unfolded_guo.png}
   }}
-  \caption{An Unrolled RNN with shared weight Matrices $U$ and $V$ between temporal states (Guo) (colah.github.io)}
+  \caption{An Unrolled RNN with shared weight Matrices $U$ and $V$ between temporal states \cite{guoBackPropagationTime2013} 
+  }
         \label{figurelabel}
      \end{figure}
 
@@ -149,7 +150,7 @@ throughout the timesteps (fig.x) allows us to define an error vector for previou
 $$
 \delta_{pj}(t-1)= \sum_h^m \delta_{ph}(t)u_{hj}f'(s_{pj}(t-1)) \eqno{(8)}
 $$
-More detailed reflections on the construction of the above equations can be found in (Guo,2013).
+More detailed reflections on the construction of the above equations can be found in \cite{guoBackPropagationTime2013}.
 The procedure previously used to obtain $delta_{pj}(t-1)$ allows for theoretically arbitrary depths $\tau$
 to be recursively calculated. In practice, large values for $\tau$ and the subsequently generated 
 long-term dependencies tend to be difficult to handle with gradient descent. This is due to the fact, that
@@ -169,8 +170,9 @@ these problems, and certain types of RNNs (like LSTMs) were specifically designe
 \subsection{Long Short Term Memory (LSTM)}
 
 The previously described problems occuring when facing long term dependencies in RNNs are successfully 
-tackled by the Long Short Term Memory (LSTM), first introduced by Hochreiter and Schmidhuber. As shown by Hochreiter 1991, 
-A key idea towards avoiding the explosion or vanishing of gradients through a large number of timesteps is 
+tackled by the Long Short Term Memory (LSTM), first introduced by Hochreiter and Schmidhuber \cite{hochreiterLongShortTermMemory1997}. 
+As shown by Hochreiter, 
+a key idea towards avoiding the explosion or vanishing of gradients through a large number of timesteps is 
 to enforce a constant errorflow through a single unit $j$ by requiring the net activation derivative of $j$ to follow 
 equation 9 with weight $w_{jj}$ of a single connection to itself.
 $$
@@ -178,7 +180,7 @@ f'_j(net_j(t))w_{jj}=1.0 \eqno{(9)}
 $$
 Simple integration over time gives us $f_j(net_j(t))=\frac{net_j}{w_{jj}}$, a linear function. Therefore our recurrent 
 definition of $net_j(t+1)=w_{jj}y^j(t)$ leads us to the conclusion 10, that the unit $j$'s activation has to remain constant 
-(Hochreiter and Schmidhuber 1997):
+\cite{hochreiterLongShortTermMemory1997}:
 $$
 y_j(t+1)=f_j(net(t+1))=f_j(w_{jj}y^j(t))=y^j(t) \eqno{(10)}
 $$
@@ -208,7 +210,7 @@ f_t = \sigma(W_f\times[h_{t-1},x_{t}] + b_f) \eqno{(11)}
 $$ 
 The $input gate$ is composed of the sigmoid-activated layer $i_t$ and the hyperbolic-tangent-activated layer $\tilde{C_t}$, creating candidates
 for replacing the current (possibly forgotten) cell state $C_{t-1}$ with $i_t\times\tilde{C_t}$. Each of these layers, again, have their own 
-set of weights and biases $W_i$, $b_i$, $W_c$ and $b_c$, leaving us with the respective layer outputs (12) and (13) (colah.github.improving):
+set of weights and biases $W_i$, $b_i$, $W_c$ and $b_c$, leaving us with the respective layer outputs (12) and (13) \cite{UnderstandingLSTMNetworks}:
 $$
 i_t = \sigma(W_i\times[h_{t-1},x_t]+b_i)  \eqno{(12)}
 $$
@@ -224,48 +226,37 @@ $$
 h_t = o_t \times tanh(C_t) = o_t\times tanh(f_t\times C_{t-1}+i_t\times\tilde{C_t}) \eqno{(15)}
 $$
 This design allows for seperate read and write capabilities and therefore enables capture of error signals within
-the cell for longer periods of time than previously possible with standard RNNs (Hochreiter et al.). Many applications with
-record-breaking performances followed, thus proving the state-of-the-art standing of LSTMs in temporal problems. Graves and Jaitly provide an   
-overview over variations of the vanilla LSTM, such as the introduction of peepholes by Gers and Schmidhuber or the lighter Gated Recurrent Unit (GRU) 
-by Cho et al. Furthermore, attention-based models as proposed by Graves et al. (Natural Turing Machines), Graves et al.(Adaptive RNNs) 
-and Neelakantan et al. () are promising more recent developtments in the field of RNNs.
-
-@draft 
-LSTMs don’t have a fundamentally different architecture from RNNs, but they use a different 
-function to compute the hidden state. The memory in LSTMs are called cells and you can think 
-of them as black boxes that take as input the previous state $h_{t-1}$ and current input $x_{t}$
-Internally these cells  decide what to keep in (and what to erase from) memory. They then 
-combine the previous state, the current memory, and the input. It turns out that these types of 
-units are very efficient at capturing long-term dependencies.
-
-\subsection{Attention and Augmented Recurrent Neural Networks}
-
+the cell for longer periods of time than previously possible with standard RNNs \cite{hochreiterLongShortTermMemory1997}. Many applications with
+record-breaking performances followed, thus proving the state-of-the-art standing of LSTMs in temporal problems. Graves and Jaitly 
+\cite{gravesEndtoEndSpeechRecognitionwith} provide an   
+overview over variations of the vanilla LSTM, such as the introduction of peepholes by Gers and Schmidhuber \cite{gersRecurrentNetsThat2000} 
+or the lighter Gated Recurrent Unit (GRU) 
+by Cho et al.\cite{choLearningPhraseRepresentations2014} Furthermore, attention-based models as proposed by 
+Graves et al. \cite{gravesNeuralTuringMachines2014}, Graves et al.\cite{gravesAdaptiveComputationTime2016} 
+and Neelakantan et al.\cite{neelakantanEfficientNonparametricEstimation2015} are promising more recent developments in the field of RNNs.
 
 \section{SPIKING NEURAL NETWORKS (SNN)}
 
 The above described ANN models differ from Feedforward Networks in regards of activation, connection design, learning rules and more, yet implicitly
 share a commonground in how they encode information in their neurons. These second generation neural networks, as commonly described in the literature,
-activate on continuous functions and make use of their derivability in backpropagation. Maass et al. (Maass et al.) provide a setup that
+activate on continuous functions and make use of their derivability in backpropagation. Maass et al. \cite{maassNetworksSpikingNeurons1997} 
+provide a setup that
 integrates a different, biologically more accurate take on modelling neuron activation. These Spiking Neural Networks (SNN) employ
-integrate-and-fire neurons (Maass et al.) which encode information with an additional temporal factor in its activation pulses, increasing
+integrate-and-fire neurons \cite{maassNetworksSpikingNeurons} which encode information with an additional temporal factor in its activation pulses, increasing
 the density of encoded information.  
 
 \subsection{Neurons - Activation and Signal Processing} 
 
-The process of signal transportation within biological neurons ...(figures and Gruning and Bohte)\newline
-
 The fundemantal idea behind the computational units of an SNN builds on integrating a temporal factor 
-in the representation of information. Various models of these spiking neurons, such as the integrate-and-fire model (Abbott), 
-the Hodgkin-Huxley model (Hodgkin and Huxley), the model by Izhikevich (Izhikevich) and the Spike Response Model by Gerstner (Gerstner) 
-exist and vary in their attempt to trade off biological accuracy and computational complexity (Grunte and Bohte).
+in the representation of information. Various models of these spiking neurons, such as the integrate-and-fire model
+ \cite{abbottLapicqueIntroductionIntegrateandfire1999}, 
+the Hodgkin-Huxley model \cite{hodgkinQuantitativeDescriptionMembrane1952}, the model by Izhikevich \cite{izhikevichSimpleModelSpiking2003}
+and the Spike Response Model by Gerstner \cite{gerstnerSpikeresponseModel2008}
+exist and vary in their attempt to trade off biological accuracy and computational complexity \cite{gruningSpikingNeuralNetworks2014}.
 The Leaky-Integrate-and-Fire model is nowadays the most widespread apporach due to its simplicity and computational advantages. 
 The representation of the activation process of the neron is modeled by an electrical circuit in which the membrane potential, threshold voltage,
-resting potential and leak rate are realized through a capacitor, gate, battery and resistance respectively. (Abbott and fig. Ponulak)
-\newline
-At any moment, an LIF neuron has a drive $v$, which depends on its bias
-current $b$; its inputs $a(in)_j$ (where the index $j$ runs from 1 to the number
-of inputs); and its synaptic weights, $W_j$ (Eliasmith and Anderson, 2002). (... and so on)
-
+resting potential and leak rate are realized through a capacitor, gate, battery and resistance respectively
+\cite{abbottLapicqueIntroductionIntegrateandfire1999}\cite{ponulakIntroductionSpikingNeural2011}(maybe fig. Ponulak).
 \subsection{Spike-based Neural Codes}
 
 Whilst encoding and decoding of the desired information is much simpler and intuitive in second generation neural network models,
@@ -275,25 +266,29 @@ still being researched, whereas various methods have been introduced in Neurosci
 
 \begin{itemize}
 
-        \item Rate Coding is an approach aiming at recording spike rates during fixed time frames. This implementation of spike encoding can be seen as an analog way of interpreting spike trains in SNNs.
-        \item Latency Coding encodes spikes based on their timing rather than their multiplicity. This encoding has for example been used in unsupervised learning [43], and
-        supervised learning methods like SpikeProp (S. Bohte, J. Kok)
+        \item Rate Coding is an approach aiming at recording spike rates during fixed time frames. 
+        This implementation of spike encoding can be seen as an analog way of interpreting spike trains in SNNs.
+        \item Latency Coding encodes spikes based on their timing rather than their multiplicity. This encoding 
+        has for example been used in unsupervised learning, and
+        supervised learning methods like SpikeProp \cite{bohteSpikePropBackpropagationNetworks}
         \item Fully temporal codes are a more general term which includes the above mentioned approaches. It encodes information based on the precise
-        timing of each spike in a spike train. (Gruning and Bohte)
-        \item Gaussian Coding applies a gaussian distribution over recorded spikes of each neuron and encodes information based on their stochastic occurence.
+        timing of each spike in a spike train\cite{gruningSpikingNeuralNetworks2014}
+        \item Gaussian Coding applies a gaussian distribution over recorded spikes of each 
+        neuron and encodes information based on their stochastic occurence.
 \end{itemize}        
 
 \subsection{Learning in Spiking Neural Networks - Synaptic Plasiticity}
 
 While conventional neural networks employ a stochastic version of gradient descend to backpropagate erros throughout the network, the same approach
 is difficult to apply in the realm of SNNs due to their temporal dependance and the non-differentiability of spike trains. Whereas multiple learning
-rules adressing SNNs exist (such as Hebbian Rule, Binarization of ANNs, Conversion from ANNs and Variations of backpropagation (Pfeiffer and Pfeil)), 
+rules adressing SNNs exist (such as Hebbian Rule, Binarization of ANNs, Conversion from ANNs and Variations of backpropagation 
+\cite{pfeifferDeepLearningSpiking2018}, 
 a state-of-the-art algorithm such as backpropagation has yet to emerge. We will first focus on a more 
 biologically motivated training rule called spike-timing-dependant plasiticy (STDP). The key feature of this approach is 
 to adjust weights between a pre- and post-synaptic neuron according to their relative spike times within an interval of roughly tens of 
-milliseconds in length (S. Bohte, J. Kok). If a postynaptic neuron fires shortly after its presynaptic neuron, the connecting weights is strengthended
+milliseconds in length \cite{bohteSpikePropBackpropagationNetworks}. If a postynaptic neuron fires shortly after its presynaptic neuron, the connecting weights is strengthended
 whereas presynaptic neurons firing after the postsynaptic neuron will lead to weakening of the weights. The experimentally refined and 
-commonly used formula according to (Y. Dan and M.-M. Poo) for the exact weight updates is given in (16)
+commonly used formula according to dan et al. \cite{danSpikeTimingdependentPlasticity2006} for the exact weight updates is given in (16)
 $$
 \Delta w = \left\{
         \begin{array}{ll}
@@ -312,44 +307,74 @@ Both mentioned approaches are illustrated in Fig. x
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.24]{stdp_hebbian2.png}
+        \includegraphics[scale=.4]{stdp_hebbian2.png}
   }}
-  \caption{left: illustration of weight-updates $\Delta w_{ij}$ with presynaptic neuron $i$ and postsynaptic neuron $j$ according to STDP
-  right: symmetric hebbian learning rule with weight update $\Delta w_{ij}$, presynaptic neuron $i$ and postsynaptic neuron $j$}
+  \caption{\textbf{A: } illustration of weight-updates $\Delta w_{ij}$ with presynaptic neuron $i$ and postsynaptic neuron $j$ according to STDP \newline 
+  \textbf{B: } symmetric hebbian learning rule with weight update $\Delta w_{ij}$, presynaptic neuron $i$ and postsynaptic neuron $j$}
         \label{figurelabel}
 \end{figure}
 
 The above mentioned learning rules share the common characteristic in which they don't require information other than what is available 
-in a local neighborhood of neurons. Therefore they do not require the transport of weight information throughout numerous layers of neurons, which
-has been shown to be biologically unrealistic Samadi et al.(Chinta and Tweed, 2012; Crick, 1989; Grossberg, 1987; Kolen and Pollack, 1994; Levine, 
-2000; Rolls and Deco, 2002; Stork, 1989). Consequently, these learning rules are suited for unsupervised learning tasks and pose interesting 
-insights from a neuroscientific standpoint. Guyonneau et al. (Tavanaei et al.) showed, that STDP-equipped SNNs are capable of learning input 
-patterns and decrease latencies between in- and output throughout training. Furthermore, T. Masquelier and S. R. Kheradpisheh point out, that 
+in a local neighborhood of neurons. Therefore they do not require the biologically unrealistic 
+transport of weight information throughout numerous layers of neurons \cite{samadiDeepLearningDynamic2017} \cite{chintaAdaptiveOptimalControl2012}
+\cite{crickRecentExcitementNeural1989}\cite{decoNeurodynamicalCorticalModel2004}. Consequently, these learning rules 
+are suited for unsupervised learning tasks and pose interesting 
+insights from a neuroscientific standpoint. Guyonneau et al. \cite{masquelierSpikeTimingDependent2008} \cite{tavanaeiDeepLearningSpiking2019}
+showed, that STDP-equipped SNNs are capable of learning input 
+patterns and decrease latencies between in- and output throughout training. Furthermore, T. Masquelier \cite{masquelierSpikeTimingDependent2008}
+and S. R. Kheradpisheh \cite{tavanaeiDeepLearningSpiking2019} point out, that 
 the increased density of encoded information in SNNs allows even a single neuron to learn spatio-temporal patterns. However practical usability
 of these learning rules raises the need for proper supervised learning algorithms, often clashing with mathematical feasibility, numerical efficiency 
-or biological plausability. In this, we encouter problems, such as the underivability of spikes and the biological abscence of outer error 
+or biological plausability. In this, we encouter problems, such as the non differntiability of spikes and the biological abscence of outer error 
 signals in deeper layers. These challenges remain generally unsolved, however variuous promising advances have been proposed in tackling them.
-In a rather biological aspect, Markov et al. propose the existance of feedback connections, designed to project information within
+In a rather biological aspect, Markov et al.\cite{markovAnatomyHierarchyFeedforward2014} propose the existance of
+feedback connections, designed to project information within
 hierarchically organized networks. Approaches such as SpikeProp by Bohte and Kok deal with discontinous nature of spiking neurons by linearizing 
 the relationship between post-synaptic input and the resulting spiking time, consequently circumventing the discontinuity of the 
-thresholding function (Bohte and Kok). Further techniques aiming at surrogating the gradient of discontinuous activations have been researched 
-and tested by Neftci et al.
-
-\subsection{Error Feedback}
-Mysteriously, the ...
-
-\subsection{Feedback-alignment}
+thresholding function \cite{bohteSpikePropBackpropagationNetworks}. Further techniques aiming at surrogating the gradient of 
+discontinuous activations have been researched 
+and tested by Neftci et al. \cite{neftciSurrogateGradientLearning2019}.
 
 
-\subsection{Performance of SNNs}
+\subsection{Eligibility Traces}
+When performing on tasks that last between few seconds to multiple minutes until an output of an ANN can be evaluated, it can be 
+difficult to assign blame or reward for the achieved outcome to particular spikes which usually happen within the range of few milliseconds. 
+Accordingly, the field of reinforcement learning and neuroscience provide an approach to close this temporal gap by introducing 
+a dynamic variable in synapses henceforth called eligibility trace \cite{seungLearningSpikingNeural2003}. Eligibility traces 
+record recent synaptic activity and enable better
+assignment of error signals to culprit neurons. Neuroscience suggests, that eligibility traces may be a key feature to 
+neuromodulatory reward based learning such as the midbrain dopaminergic system \cite{panDopamineCellsRespond2005}. Updates to the 
+eligiblity trace are described
+by the eligibility function $f_c(t)$ in close accordance to STDP spike patterns of pre-/postsynaptic and post-/presynaptic spike pairs. Respectively, 
+a pair of spikes will increase or decrease the eligibility trace $c_{ji}(t)$ of the synpase over time (fig. x A). Reward signals $d(t)$ 
+received after a time delay can now be assigned to synapses using a learning rule that changes synaptic weights proportionally to the product of
+$c_{ji}(t)$ and $d(t)$, (17).
+
+$$
+\frac{d}{dt}w{ji}(t) = c_{ji}(t)d(t) \eqno{(17)}
+$$ 
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.35]{etraces.png}
+  }}
+  \caption{\textbf{A:} Eligibility function fc(t). Illustrated are values for a pre-/postsynaptic spike pattern. Negative for
+  post-/presynaptic spike patterns. \newline
+  \textbf{B:} Contributions of spike patterns (red and green) to an eligibility trace $c(T)$ and the according
+  weight update $w(t)$ upon reception of a reward $d(t)$.\cite{legensteinLearningTheoryRewardModulated2008} }
+        \label{figurelabel}
+     \end{figure}
 
 \section{LEARNING TO LEARN (L2L)}
 
 The field of reinforcement learning (RL) has recently celebrated great success at reaching human-like and even surpassing human abilities on
-complex environments such as Atari and Go (Mnih et al. and Silver et al.) with the implementation of Deep Neural Networks to 
+complex environments such as Atari \cite{mnihAsynchronousMethodsDeep2016} and Go \cite{silverMasteringGameGo2016} with the implementation 
+of Deep Neural Networks to 
 account for non-linear function approximation over high-dimensional action and state spaces. However Artificial Intelligence in general 
-(Landsell and Kording) and Reinforcement Learning in particular (Dual et al.) currently suffer from two major drawbacks, 
-that are limiting their application and design (J. Wang et al.): 
+\cite{lansdellLearningtolearn2018} and Reinforcement Learning in particular \cite{duanRLFastReinforcement2016} currently
+suffer from two major drawbacks, 
+that are limiting their application and design \cite{wangLearningReinforcementLearn2016}:
 \begin{itemize}
         \item Firstly the immense volume of required training data and the relatively expensive generation of this data in often simulated
         environments.
@@ -357,20 +382,20 @@ that are limiting their application and design (J. Wang et al.):
         depending on numerous hyperparameters and thus requiring immense efforts compared to currently reached results.
 \end{itemize}        
 
-Botvinick et al. explain these weak spots in AI with a need for low learning rates and the bias-variance trade-off.
+Botvinick et al. \cite{botvinickReinforcementLearningFast2019} explain these weak spots in AI with a need for low 
+learning rates and the bias-variance trade-off.
 Low learning rates are necessary to prevent both catastrophic interference (discarding previously reached successful
-configurations) and overfitting (Hardt, M. et al.). The bias-variance trade-off is a phenomenon describing the contrary 
+configurations) and overfitting \cite{hardtTrainFasterGeneralize2015}. The bias-variance trade-off is a phenomenon describing the contrary 
 working directions of efficiency-driving biases or priors and performing on a wider range of tasks. \newline
 
---------- maybe more basics from hochreiter et al. -------- \newline
-
-With some approaches addressing these issues existing, Landsell and Kording argue, that these L2L approaches can be categorized into 
-either Learning to Optimize or Structure Learning (Landsell and Kording). Learning to Optimize focusses on the general 
+With some approaches addressing these issues existing, Landsell and Kording\cite{lansdellLearningtolearn2018} argue, 
+that these L2L approaches can be categorized into 
+either Learning to Optimize or Structure Learning. Learning to Optimize focusses on the general 
 adaption of network parameters to achieve efficient learning rules on arbirary Task classes without hand-selection. Similiarly to the way
 gradient descent applies small changes of the weights in an NN in order to minimize loss functions, the design of AI systems can be viewed as
 an optimization problem itself, that requires parameter optimization to ensure a well performing algorithm. Structure Learning 
 on the other hand makes use of structural similarities within a finite family of tasks to reach higher data
-efficiency due to its prior adaptnedness to the given family of tasks(Landsell and Kording). \newline
+efficiency due to its prior adaptnedness to the given family of tasks \cite{lansdellLearningtolearn2018}. \newline
 
 \begin{figure}[thpb]
         \centering
@@ -379,8 +404,9 @@ efficiency due to its prior adaptnedness to the given family of tasks(Landsell a
   }}
   \caption{Types of learning-to-learn in AI. Learning-to-learn can be roughly divided into learning to optimize and structure learning.
   In AI, hyperparameter optimization is
-  an example of learning to optimize (Maclaurin et al. 2015), while a recurrent neural network taking rewards, actions and observations
-   can often be used to perform structure learning (Wang et al.)(Landsell et al.).}
+  an example of learning to optimize \cite{maclaurinGradientbasedHyperparameterOptimization}, while a 
+  recurrent neural network taking rewards, actions and observations
+   can often be used to perform structure learning \cite{wangLearningReinforcementLearn2016} \cite{lansdellLearningtolearn2018}.}
         \label{figurelabel}
      \end{figure}
 
@@ -388,35 +414,39 @@ efficiency due to its prior adaptnedness to the given family of tasks(Landsell a
 \subsection{Learning to Reinforcement Learn (metal-RL) and RL²}
 
 A high level architecture consisting of a learner (performing on the task itself) and a meta-learner (adjusting the learner) is
-inherent to most implementations of L2L (Landsell and Kording) and has been refined in various ways to create new L2L Systems, as will be
+inherent to most implementations of L2L \cite{lansdellLearningtolearn2018} and has been refined in various ways to create new L2L Systems, as will be
 explained in the following section.
 
-Wang et al. as well as Duan et al. introduced frameworks that can be thought of as generating an RL algorithm of their own and
+Wang et al.\cite{wangLearningReinforcementLearn2016} as well as Duan et al.\cite{duanRLFastReinforcement2016} introduced 
+frameworks that can be thought of as generating an RL algorithm of their own and
 provide agents, who are given a predesigned prior to efficiently learn any task $T \epsilon F$ (in the original papers denoted as 
 a Markov Decision Process (MDP) $m \epsilon M$) from a family of interrelated fasks $F$(i.e. a set of MDPs $M$). 
 
 In their attempt to design an algorithm, capable of performing well on a set $M$ of Markov Decision Processes (MDPs), Duan et al. implement a nested
-system in which learning an RL algorithm is regarded as a reinforcement learning problem itself, hence the name RL²(Duan et al.). The agent performing 
+system in which learning an RL algorithm is regarded as a reinforcement learning problem itself, hence the name RL² 
+\cite{duanRLFastReinforcement2016}. The agent performing 
 on a randomly drawn separate MDP $m \epsilon M$ from the distribution $\rho_{M} : M \longrightarrow R_{+}$ is represented as a recurrent neural
 network (RNN) which outputs the probability distribution over the tasks action-space $\pi$ (policy) based on a function $\phi (s,a,r,d)$ of 
 the tuple (state, action, reward, termination flag) (Duan et al.). On a higher abstraction layer, this RNN is being 
 optimized by an implementaion of Trust Region Policy Optimization (TRPO), a 
-state-of-the-art DRL algorithm (Schulman et al., 2015) with several advantages regarding stability and hyperparameter dependance.\newline
+state-of-the-art DRL algorithm \cite{schulmanTrustRegionPolicy2015} with several advantages regarding stability
+ and hyperparameter dependance.\newline
 
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.185]{meta-RL_Botvinick.png}
+        \includegraphics[scale=.24]{meta-RL_Botvinick.png}
   }}
   \caption{Schematic of Meta-reinforcement Learning, Illustrating the Inner and Outer Loops of Training. The
   outer loop trains the parameter weights $\theta$, which determine the inner-loop learner (’Agent’, instantiated by a recurrent
   neural network) that interacts with an environment for the duration of the episode. For every cycle of the outer loop, a new
-  environment is sampled from a distribution of environments, which share some common structure (Botvinick et al.).}
+  environment is sampled from a distribution of environments, which share some common structure \cite{botvinickReinforcementLearningFast2019}.}
         \label{figurelabel}
      \end{figure}
 
-Wang et al. define a similiar setup in which a RL-algorithm is responsible for learning the weights of a nested RNN. Both, inner and outer loop 
-in this framework draw their learning experience from the reward information generated by the actions of the RNN (Wang et al.), where 
+Wang et al.\cite{wangLearningReinforcementLearn2016} define a similiar setup in which a RL-algorithm is responsible for 
+learning the weights of a nested RNN. Both, inner and outer loop 
+in this framework draw their learning experience from the reward information generated by the actions of the RNN, where 
 the RNN holds information on the previously chosen action and the subsequent rewards. However the process of learning
 in each of these loops is realized differently and results in specializations of different scopes. While the wrapping RL-algorithm used to 
 optimize the weights of the RNN operates over the entire set of episodes, that is to say all MDPs $M$, learning of the nested RNN 
@@ -424,11 +454,12 @@ within a single task $m$ is based on the inner recurrent dynamics of the network
 is able to encode learned experience on a specific task using only its inner memory variables, leaving us with the observation
 that a well working short-term memory is a key factor to learning on different levels of abstraction. 
 The policy outputs $\pi$ of this network can then
-be viewed as an RL-algorithm on its own, resulting in the name meta-RL. For the implementation of this framework Wang et al. 
-used an LSTM according to Hochreiter and Schmidhuber (Hochreiter and SChmidhuber, 1997) to account for the inner RNN, while both synchronous 
+be viewed as an RL-algorithm on its own, resulting in the name meta-RL. For the implementation of this framework Wang et al.
+\cite{wangLearningReinforcementLearn2016} 
+used an LSTM according to Hochreiter and Schmidhuber \cite{hochreiterLongShortTermMemory1997} to account for the inner RNN, while both synchronous 
 asynchronous advantage actor critics (A2C and A3C) (Mnih et al.) were employed to learn inter-cell weights.
 The observation vectors of experiment environments
-were either directly fed to the LSTM one-hot-encoded or passed through an additional deep encoder model (Wang et al.). 
+were either directly fed to the LSTM one-hot-encoded or passed through an additional deep encoder model\cite{wangLearningReinforcementLearn2016}. 
 Experiments on a series of bandit problem and two
 MDP-centered problems with implementation architectures as described above showed, that meta-RL delivers 
 competitive results compared to problem-specific algorithms (Thompson sampling, UCB, Gittins) while operating on a 
@@ -437,7 +468,7 @@ wider set of tasks. \newline
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.14]{metaRL_arcs_Wang.png}
+        \includegraphics[scale=.29]{metaRL_arcs_Wang.png}
   }}
   \caption{Advantage actor-critic with recurrence. In all architectures, reward and last action are additional inputs
         to the LSTM. For non-bandit environments, observation is also fed into the LSTM either as a one-hot or passed
@@ -447,28 +478,23 @@ wider set of tasks. \newline
         fed in as input. π = policy; v = value function. A3C is the distributed multi-threaded asynchronous version
         of the advantage actor-critic algorithm (Mnih et al., 2016); A2C is single threaded. (a) Architecture used in
         experiments 1-5. (b) Convolutional-LSTM architecture used in experiment 6. (c) Stacked LSTM architecture
-        with convolutional encoder used in experiments 6 and 7 (Wang et al.)}
+        with convolutional encoder used in experiments 6 and 7 \cite{wangLearningReinforcementLearn2016}}
         \label{figurelabel}
      \end{figure}
   
 
 A notable characteristic of both previously described setups is that the learning rate of the nested RNN is chosen lower compared 
 to the outer optimization loop, consequently preventing
-the agent from overfitting to a single task $m$, yet gathering knowledge from the entire MDP space $M$ (Botvinick et al.).\newline
-
-
-more from :  \newline
-Meta-SGD: Learning to Learn Quickly for Few-Shot Learning (Li et al.) \newline
-Meta-learning in Reinforcement Learning (Schweighofer and Doya) \newline
-Learning to Learn without Gradient Descent by Gradient Descent (Chen et al.)
-Learning to Learn Using Gradient Descent (Hochreiter et al.)
+the agent from overfitting to a single task $m$, yet gathering knowledge from the entire MDP space $M$ 
+\cite{botvinickReinforcementLearningFast2019}.\newline
 
 
 \subsection{L2L in the Context of Spiking Neural Networks}
 When applied to Networks of Spiking Neurons, the previously described framework of L2L offers a promising alternative
 to common approaches which embed a series of biologically implausible ingredients. One major biological implausibility
 in learning algorithms employing error feedback is suggested by evidence, that real neurons almost certainly lack weight transport
-when unrolling the chain rule of backpropagation on the backward pass. (Samadi et al., Chinta and Tweed 2012, Crick 1989, Grossberg 1987) In order 
+when unrolling the chain rule of backpropagation on the backward pass\cite{samadiDeepLearningDynamic2017}
+\cite{chintaAdaptiveOptimalControl2012}\cite{crickRecentExcitementNeural1989}. In order 
 to calculate gradients
 of an error at the outputs of a network, these neurons would have to maintain information about the strenth of synapses outside their local
 neighborhood, which seems unrealistic from a biological point of view. This evidence suggests the existence of a more sophisticated 
@@ -476,48 +502,192 @@ system of learning signals, which dont require information on global synaptic we
 neurons, such as the Leaky integrate-and-fire neuron, lack key characteristics of real neurons and are often even further modified by engaging
 derivative surrogate functions in order to deal with the non-differentiable nature of spiking neurons. Among these mismatches between 
 biological neurons and their artifical models is the ability of biological neurons, to adapt to previously experienced inputs
-and weights (Samadi et al.). The ability to adapt to previous spikes of presynaptic neurons however not merely represents a visual
+and weights \cite{samadiDeepLearningDynamic2017}. The ability to adapt to previous spikes of presynaptic neurons however not merely represents a visual
 difference but can be interpreted as the ability to store temporal information. \newline
-By deploying adaptive LIF neurons in a Network of Spiking Neurons, Bellec et al. were able to overcome not only a 
+By deploying adaptive LIF neurons in a Network of Spiking Neurons, Bellec et al.\cite{bellecLongShorttermMemory2018} were able to overcome not only a 
 discrepancy between model and reality but also achieved a well working long short-term memory, thus creating a new type of Recurrent
 Network of Spiking Neurons, the LSNN. The adaptivity of neurons is here realized by increasing the firing threshold $B_j(t)$ of a neuron $j$
-by a fixed amount $\frac{\beta}{\tau_{a,j}}$ for incoming spikes and decaying it exponentially to a baseline value in spike-free intervals 
+by a fixed amount $\frac{\beta}{\tau_{a,j}}$ for incoming spike trains $z_j(t)$ and decaying it exponentially to a baseline $b^0_j$ value in spike-free intervals 
 with time constant $\tau_{a,j}$. The time constant can be chosen to fit the desired range of the created short-term memory. For discrete timesteps
-of $\delta t = 1 ms$ the dynamics of the adaptive threshold becomes:
-
-
-
+of $\delta t = 1 ms$ the dynamics of the adaptive threshold becomes (18) with the recursive update rule (19):
+$$
+B_j(t) = b^0_j + \beta b_j(t) \eqno{(18)}
+$$
+$$
+b_j(t+\delta t) = e^{-\frac{\delta t}{\tau_{a,j}}} b_j(t)+(1-e^{-\frac{\delta t}{\tau_{a,j}}})z_j(t) \eqno{(19)}
+$$
 As pointed out in the meta-RL, a well-working short-term memory is crucial to the ability to store learned experience on different levels
-of abstraction and now allows for the application of L2L to a network of spiking neurons. 
-The network 
-architecture comprises additional sets of non-adaptive excitatory and inhibitory LIF neurons(Bellec et al., s. fig. x). Very similarly to 
-Wangs et al., the synaptic weights of this network are subject to optimization of an outer loop algorithm, in this case a combination of
-BPTT and a biologically inspired rewiring method called DEEP R (Bellec et al. LSTM L2l and Bellec DEEP wiring, fig. x).\newline
+of abstraction and now allows for the application of L2L to a network of spiking neurons. On a side note, the increase of the firing 
+threshold in the adaptive neurons clearly leads to an overall decrease of spikes, thus operating more energy efficiently when deployed 
+on neuromorphic hardware.  
+The network  architecture comprises additional sets of non-adaptive excitatory and inhibitory LIF neurons
+\cite{bellecLongShorttermMemory2018}(s. fig. x). Similarly to 
+Wang et al.\cite{wangLearningReinforcementLearn2016}, 
+the synaptic weights of this network are subject to optimization of an outer loop algorithm, in this case a combination of
+BPTT and a biologically inspired rewiring method called DEEP R \cite{bellecDeepRewiringTraining2017}(s. fig. x). Since BPTT requires 
+calculation of error gradients, the authors utilized a pseudo-derrivate to surrogate the non-existing derivative of neuronal spike trains 
+which comprises a simple damped triangular function. The synaptic weights are updated only after completed runs of tasks, while in-task 
+optimzation is realized through internal memory dynamics according to (17) and (18). Further details on the network setup and implementation 
+can be reviewed in \cite{bellecLongShorttermMemory2018}.
+\newline
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.28]{lsnn.png}
+}}
+\caption{Basic architecture of LSNN. Percentages on sypatic connections represent connectivity of the LSNN after applying DEEP R 
+in conjunction with BPTT. 
+Populations X,Y and R of regular spiking LIF neurons coupled with 
+a population A of adaptive LIF neurons. \cite{bellecLongShorttermMemory2018}}
+        \label{figurelabel}
+        \end{figure}
 
-These results might already offer interesting perspectives from a biological and neuroscientific view, especially considering the formerly
-exlusively human ability to 
-learn on different levels of abstraction. However one is tempted to wonder if
-this framework can be applied to more biologically plausible models on a technical level. Recall, that the previously described setup including BPTT
+These results of this model might already offer interesting perspectives from a biological and neuroscientific view, ability to learn on
+different levels of abstraction, so far a central asset biological brains. However one is tempted to wonder if
+this framework can be applied to more biologically plausible models on a technical level. Recall that the previously described setup including BPTT
 still requires the transport of global weight information as well as a transmission of error signals through time which are 
-widely considered implausible in real RNNs (Samadi et al., Chinta and Tweed 2012, Crick 1989, Grossberg 1987). 
+widely considered implausible in real RNNs. Bellec et al.\cite{bellecBiologicallyInspiredAlternatives2019} consequently 
+developed an approach designed to tackle these shortcomings. The chapter "eligibility traces" already hinted at the possibility of avoiding the need
+for weight transport in credit assigment by conducting error propagation through dynamic eligibility traces. Bellec et al. take up
+the learning rule (17) with a different motiviation, namely the approximation of error gradients. The fundamental role of eligibility traces  
+in this algorithm led to the name e-Prop. The underlying basis for e-Prop is the assumption, that error gradients w.r.t. a synaptic 
+weight $\theta_{ji}$ can be factorized into a Learning 
+signal $L^t_j$ and its eligibility trace $e^t_{ji}$, summed up over time\cite{bellecBiologicallyInspiredAlternatives2019}:
 
+$$
+\frac{dE}{d\theta_{ji}} = \sum_t L^t_j e^t_{ji} \eqno{(20)}
+$$
+
+Bellec et al.'s claim for biological plausibility is coupled to obtaining the learning signal $L^t_j$ in a way, that does not require 
+a propagation of error gradients through time or numerous layers (fig.x). In the following we will focus on two different approximizations
+for these learning signals $\hat{L}^t_{j1}$ and  $\hat{L}^t_{j2}$ constituting two versions e-Prop 1 and e-Prop 2. \newline
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.26]{eprop1pass.png}
+  }}
+  \caption{Illustration of the error signal flow throgh network layers. Evidently, e-prop 1 does not require information transport
+  in a backwards pass. (ill. from \cite{bellecBiologicallyInspiredAlternatives2019})
+  }
+        \label{figurelabel}
+     \end{figure}
+
+E-Prop 1 uses the findings described in "feedback alignment" to braodcast error signals directly to the affected synaptic weights 
+while adopting a random weight matrix instead of the actual weights. Assuming an error at the output layer $k$ of leaky readout neurons 
+$y^t_k$ of $((y^{*,t}_k-y^t_k)$ our Learning signal to a neuron $\theta ^rec_{ji}$ thus becomes $\sum_k B^random_{jk}(y^{*,t}_k-y^t_k)$
+instead of $\sum_k \theta^out_{kj}(y^{*,t}_k-y^t_k)$. Since this network is an RSNN, these learning signals are broadcasted to all synaptic
+weights in different time slices of an unrolled recurrent network. The authors however reached better results when choosing the random 
+weight projection matrix to be constant over all time-slices.
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.4]{eprop1.png}
+  }}
+  \caption{Basic architecture of e-prop 1. Error broadcasts are calculated online at the output layer and sent directly
+  to deeper layers of the RSNN, avoiding the necessity for weight transport on the backwards pass.(ill. 
+  from \cite{bellecBiologicallyInspiredAlternatives2019})
+  }
+        \label{figurelabel}
+     \end{figure}
      
-tbd \dots
-Long short-term memory and Learning-to-learn in networks of spiking neurons (Bellec et al.)
-Biologically inspired alternatives to backpropagation through time for learning in recurrent neural nets (Bellec et al.)
-Embodied Neuromorphic Vision with Event-Driven Random Backpropagation (Kaiser et al.)
+This approach is applicable to architectures with short-term memory, such as LSNNs, thus providing a basis for L2L frameworks, where 
+learning on different levels could be allocated to the outer optimization through e-prop 1 and inner adaptive memory variables. 
+\newline
+However Bellec et al. developed a second version of e-Prop, specifically dedicated to the utilization of L2L, called e-Prop 2. 
+Neuroscience has long considered the existence of a sophisticated system of error feedback generation, where a sudden sharp 
+negative potential in the brain called error-related negativity (ERN) is suspected to play a role in reflecting such error signals.
+ERN accompanies motoric misbehaviour responses and typically peaks within 80ms - 120ms after beginning of an error signal 
+\cite{gehringErrorRelatedNegativity2018}\cite{dikmanErrorMonitoringReward2000}.
+However further research remarkably points out that ERN can be observed even before motoric feedback becomes evident through 
+sensory feedback, implying the existence of additional error response- and prediction systems embedded in biological neural networks
+\cite{macleanUsingBrainPotentials2015}
+which may well be a result of evolutionary development.
+Motivated by this finding, Bellec et al.\cite{bellecBiologicallyInspiredAlternatives2019} engaged an additional 
+RSNN solely designed to generate optimized learning signals in e-Prop 2's architecture.
+These error-modules now take over the role of an outer-loop meta learner as mentioned in the chapter "meta-RL". Learning of the error module 
+is again accomplished by training on a whole family of tasks $F$ with BPTT. Conceivably, the application of BPTT contradicts the claim for 
+biological plausability, howbeit the authors argue that the origin of 
+well-developed systems of error-prediction and signal-generation are not fully understand but do not require biologically plausible optimization 
+algorithms if interpreted as priors formed by a long process of evolution. The error module contains weights $\Psi$ and receives the  
+inputs $\mathbf{x^t}$ and a target vector $m\mathbf{y^{*,t}}$ which may be the target output of the network or a desired target state 
+(e.g. a target vector may 
+be the position of a robotic manipulator at time $t$, while the network output are joint velocities) \cite{bellecBiologicallyInspiredAlternatives2019}.
+A distinct difference 
+between this setup and meta-RL or L2L LSNNs lies within the split network neurons of outer meta-learner and inner learner. Since the outer error
+modules now posess their own set of neurons with weights $\mathbf{\Psi}$, the inner learner can store learned experience in 
+its own set of synaptic weights
+$\mathbf{\theta}$, implicitly alleviating the categorical need for short-term memory. \newline
 
-\subsection{Implications for Neuroscience and Psychology}
-That is, having to learn their complete knowledge about the world from scratch, whereas the human brain has undergone a long history of evolutionary
-development, adjusting its learning paradigms to the challenges it faces (Duan et al.). \newline
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.4]{eprop2.png}
+  }}
+  \caption{ Basic architecture of e-prop 2. An Error module network receives network inputs, a target state and the network state to 
+  produce learning signals optimized to improve learning in a nested RSNN (ill. \cite{bellecBiologicallyInspiredAlternatives2019}).
+  }
+        \label{figurelabel}
+     \end{figure}
 
-more from: \newline
-Prefrontal cortex as a meta-reinforcement learning system (WAng)
-Reinforcement Learning, Fast and Slow (Botvinick et al.) \newline
-Biologically inspired alternatives to backpropagation through time for learning in recurrent neural nets (Bellec et al.) \newline
-Towards learning-to-learn (Landsell and Kording) \newline
+Training of this model is split into a training phase and a testing phase both consisting of exactly one trial. The initial output of the 
+inner learner considering a specific task $C$ therefore depends on its initial set of weights $\mathbf{\theta_{init}}$. 
+As e-Prop 2 optimizes $\mathbf{\theta_{init}}$
+after a single training trial using its own initial weights $\mathbf{\Psi_{init}}$, the output on the test trial with the same specific task $C$ is 
+now a result of the improved priors $\mathbf{\theta_{test,C}}$. A cost function for BPTT in the error module is created from the results of the test run
+$L_C(\mathbf{\theta_{test,C}})$. The complete learning dynamics of e-Prop 2 are then described by the minimization problem (21) and the 
+update rule (22):
+$$
+min\{ \mathbf{E}_{C\forall C\epsilon F}[L_C(\mathbf{\theta_{test,C}})]\} \eqno{(21)}
+$$
+$$
+(\mathbf{\theta_{test,C}})_{ji} = (\mathbf{\theta_{init}})_{ji} - \eta \sum_t \hat{L}^t_j e^t_{ji} \eqno{(22)}
+$$
 
-\section{APPLICATIONS OF L2L AND SNNS IN ROBOTICS}
+Duan et al.\cite{duanOneShotImitationLearning2017} identified the outer-loop optimization algorithm as an imminent 
+bottleneck to this approach, hence it comes as 
+little surprise, that further approaches such as the work by Bohnstingl et al.\cite{bohnstinglNeuromorphicHardwareLearns2019}
+ have aimed at designing better outer-loop algorithms.
+The unsolved status of L2L architectures inspired the authors to implement a modular setup in which the optimization algorithms
+for the outer loop as well as the inner leaner can easily be exchanged, allowing a fast evaluation of various possible algorithms. In 
+particular, gradient-free optimization algorithms were employed to generate well-performing hyperparameters of a learner concerning a 
+family of tasks. Here, Cross-Entropy (CE) \cite{botevCrossEntropyMethodOptimization2013}, Evolution Strategies(ES)
+\cite{beyerEvolutionStrategiesComprehensive2002} and Simulated Annealing(SA)\cite{kirkpatrickOptimizationSimulatedAnnealing1983}
+were applied to mimic evolutionary 
+processes involved in the development of human learning. CE and ES are metaheuristic global optimization algorithms designed to regions of 
+well-performing parameters, while SA generates a single set of parameters. Given their probabilistic nature, these algorithms tend to be 
+computationally expensive and were thus deployed to neuromorphic hardware to ensure feasibility \cite{bohnstinglNeuromorphicHardwareLearns2019}.
+In comparison to e-Prop, 
+Bohnstingl et al. arranged a setup in which a new learning rule itself is represented by a multilayer perceptron (MLP) ANN and fitted by 
+adjusting its weights and biases (fig. x). 
+
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.5]{metaplasticity.png}
+  }}
+  \caption{ MLP architecture of meta-plasticity with inputs $\mathbf{(x)}$, one hidden layer of seven neurons and parameters $\theta$. 
+  The network outputs the weight updates for the agent-network.
+  (ill. edited from \cite{bohnstinglNeuromorphicHardwareLearns2019}.
+  }
+        \label{figurelabel}
+     \end{figure}
+
+The resulting learning rule $f_{ANN}(\mathbf{x_{ji}}(t);\theta)$ is called meta-plasiticity and offers 
+a new perspective on how synaptic 
+plasticity in SNNs may be adjusted to boost performance on whole task families. Meat-plasticity, polished over various tasks
+of a family F, may enable an SNN-based learner to better perform on each of these tasks by adhering to the simple weight update (23):
+
+$$
+\Delta w_{ji}=f_{ANN}(\mathbf{x_{ji}}(t);\theta) \eqno{(23)}
+$$
+
+Bohnstingl et al. conclude, that the algorithm applied in the outer loop of an L2L framework is crucial to 
+its function and emphasize the stability offered by CE and ES due the generation of regions of well-working parameters as opposed to single values
+in SA. The perspective of declaring even plasticity rules subject to L2L optimization might offer new paths for research and eventually provide
+important insights into learning in biological networks of neurons.
+
+\section{APPLICATIONS OF L2L IN ROBOTICS}
 
 Robotics has undergone many successful developments in the recent past with advances being pushed from 
 numerous fields of engineering, including that of machine learning. Yet the design process is still a tedious and 
@@ -526,12 +696,12 @@ the control, motion planning and sensoric interpretation require suitable setups
 for variation. For example industrial manipulator robots can perform outstandingly when placed in a fixed production line, yet 
 recognizing and grasping everyday objects in a kitchen or workshop poses a much higher challenge, as it requires the skill to 
 make sense of broad environments with numerous imaginable tasks. Furthermore the dominating problems of applying RL in 
-robotics can be summarized by the following problem classes (https://towardsdatascience.com/reinforcement-learning-for-real-world-robotics):
+robotics can be summarized by the following problem classes \cite{rivlinReinforcementLearningRealWorld2019}:
 
 \begin{itemize}
         \item Sample efficiency
         \item Sim2Real
-        \item Reward Specification
+        \item Reward function optimization
         \item Safety
 \end{itemize}   
 
@@ -539,60 +709,70 @@ The previous sections revealed a high potential in L2L frameworks in terms of sa
 feasible answers to expensive data generation or overfitting to simulator-specific features. However this further implies a 
 reflection on the scalability of said L2L approaches in order to evaluate their applicability in the often very
 high-dimensional task spaces faced in robotics. \newline
-Wang et al. examine meta-RL's ability to detect abstract task structures in large scale problems by adapting a well-known behavioural experiment 
-described by Harlow (Harlow, 1949) to a visual fixation task. In Harlows experiment, monkeys were presented two unfamiliar objects, with one 
-hiding a bowl filled with food and while the other holds an empty bowl. The monkeys were allowed to choose one of the objects and received the reward, if present. 
-Despite switching the objects for new unkown objects in each episode, upon replaying several trials in several episodes of this game, the animals showed
-a general understanding of the underlying structure of the problem. After beginning a new episode with new objects, the monkeys would, inevitably, take 
-one random guess but managed to succeed in the following trials of the episode (Botvonick et al.). \newline
+Wang et al.\cite{wangLearningReinforcementLearn2016} examine meta-RL's ability to detect abstract task 
+structures in large scale problems by adapting a well-known behavioural experiment 
+described by Harlow \cite{harlowFormationLearningSets1949} to a visual fixation task. In Harlows experiment, 
+monkeys were presented two unfamiliar objects, with one 
+hiding a bowl filled with food and while the other holds an empty bowl. The monkeys were allowed to choose one
+ of the objects and received the reward, if present. 
+Despite switching the objects for new unkown objects in each episode, upon replaying several trials in 
+several episodes of this game, the animals showed
+a general understanding of the underlying structure of the problem. After beginning a new episode with new objects, 
+the monkeys would, inevitably, take 
+one random guess but managed to succeed in the following trials of the episode \cite{botvinickReinforcementLearningFast2019}. \newline
 
 \subsection{Tasks in high-dimensional spaces}
 
 Motion and path planning are fundamental problems in robotics, whether it be within a space of rich visual input, sensory data or
-configuration/join-spaces. Similiar to the problem described by Harlow, the navigational task in the I-maze environment as described by 
-Mirowski et al. and Jaderberg et al. requires a understanding of the general structure of the problem in order to learn sample-efficiently 
+configuration/joint-spaces. Similiar to the problem described by Harlow, the navigational task in the I-maze environment as described by 
+Mirowski et al.\cite{mirowskiLearningNavigateComplex2016} and Jaderberg et al.\cite{jaderbergReinforcementLearningUnsupervised2016} 
+requires an understanding of the general structure of the problem in order to learn sample-efficiently 
 on the specific task. In this case the same maze spawns a goal location on random position within the maze where the agent has to learn
-a motion path to the goal in as few trials as possible. The results of Wang et al. show, that an architecture of stacked LSTM is able to 
+a motion path to the goal in as few trials as possible. The results of Wang et al.\cite{wangLearningReinforcementLearn2016}
+ show, that an architecture of stacked LSTM is able to 
 solve the task after having conducted one exploration run (finishing the episode in ~100 timesteps) notably faster (~30 timesteps) within few
 explotation runs. The reference baseline, a feedforward architecture A3C learner, is not able to solve the problem at all. 
  
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.23]{Maze_wang.png}
+        \includegraphics[scale=.2]{Maze_wang.png}
   }}
   \caption{a) view of I-maze showing goal object in one of the 4 alcoves b) following initial exploration
   (light trajectories), agent repeatedly goes to goal (blue trajectories) c) Performance of stacked LSTM (termed
   “Nav A3C”) and feedforward (“FF A3C”) architectures, per episode (goal = 10 points) averaged across top 5
   hyperparameters. e) following initial goal discovery (goal hits marked in red), value function occurs well in
-  advance of the agent seeing the goal which is hidden in an alcove.
+  advance of the agent seeing the goal which is hidden in an alcove. \cite{wangLearningReinforcementLearn2016}
   }
         \label{figurelabel}
      \end{figure}
 
-Duan et al. take a similiar approach in their evaluation of the feasbility of RL² in high-dimensional state spaces. Again a randomly generated 
+Duan et al.\cite{duanRLFastReinforcement2016} take a similiar approach in their 
+evaluation of the feasbility of RL² in high-dimensional state spaces. Again a randomly generated 
 maze with a randomly placed target is chosen as the problem to solve for the agent. During one test run, the agent is given a number 
-of episodes during which the maze structure and target position remain fixed. In contrast to an earlier approach to this RL-Task shown by Oh et al. 
-RL² bases its actions within a more granular action space (Duan et al.). The environments sparse reward payout design (+1 for target, 
+of episodes during which the maze structure and target position remain fixed. In contrast to an earlier approach to this RL-Task shown by Oh et al.
+\cite{ohZeroShotTaskGeneralization2017} 
+RL² bases its actions within a more granular action space. The environments sparse reward payout design (+1 for target, 
 -0.001 for wall hits, -0.04 per time frame) poses additional challenges to the agents learning and requires well-devloped exploration strategies 
 in the first episode in order to gain information on the problems ground structure. Cross-validation with a small and a larger version of the 
 maze environment show a significant reduction in solving trajectory lengths between the first to episodes and indicate, that the RL² algorithm 
 managed to utilize previoulsy gained information to come to good solutions more quickly. However the shown results are not yet optimal
 as the agent still forgets, though rarely, initially explored target positions and explores further paths in the second episode. Duan et al. 
-indicate that further imporvements might come with improved RL-algorithms as the outer-loop optimizer.
+indicate that further imporvements might come with improved RL-algorithms as the outer-loop optimizer (fig. x). 
 
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.20]{duan_maze.png}
+        \includegraphics[scale=.17]{duan_maze.png}
   }}
   \caption{Visualization of the agent’s behavior. In each scenario, the agent starts at the center of the
-  blue block, and the goal is to reach anywhere in the red block.  
+  blue block, and the goal is to reach anywhere in the red block \cite{duanRLFastReinforcement2016}. 
   }
         \label{figurelabel}
      \end{figure}
 
-Bellec et al. tested an implementation of LSNN on a navigational task in a 2D arena in reinforcement learning to demonstrate applicability in 
+Bellec et al.\cite{bellecLongShorttermMemory2018} tested an implementation of LSNN on a navigational task in a 
+2D arena in reinforcement learning to demonstrate applicability in 
 complex environments. The LSNN-based agent was palced in a circular arena in which a specific task $M$ would be to reach a goal within this arena
 on a fixed position, while the whole family $F$ of tasks would include various goal positions within this arena. By setting these goal positions 
 to be close to the arena boundaries, the agent is challenged to develop an abstract understanding of the commonalities between all tasks, 
@@ -607,34 +787,109 @@ position and utilizing this knowledge to efficiently reach the goal in subsequen
 \begin{figure}[thpb]
         \centering
         \framebox{\parbox{3in}{
-        \includegraphics[scale=.24]{lsnn_combined.png}
+        \includegraphics[scale=.4]{lsnn_navigation.png}
 }}
-\caption{\textbf{A:} Basic architecture of LSNN. Percentages on sypatic connections represent connectivity of the LSNN after applying DEEP R 
-in conjunction with BPTT. 
-Populations X,Y and R of regular spiking LIF neurons coupled with 
-a population A of adaptive LIF neurons. (Bellec et al.) \newline
-\textbf{B:} Top: the untrained model does not show any strategic or efficient way to find the goal. Bottom:
-The trained model performs initial exploration runs alongside environment boundaries, exhibiting the abstract understanding
+\caption{\textbf{A:} The untrained model does not show any strategic or efficient way to find the goal. (Bellec et al.) \newline
+\textbf{B:} The trained model performs initial exploration runs alongside environment boundaries, exhibiting the abstract understanding
 that all tasks of family $F$ share the characteristic of goals close to the arena boundaries. Efficient path-planning of the agent 
-in the subsequent runs prove, that the adaptive LIF neurons were capable of storing the position of the goal in short-term memory. (Bellec et al.)}
+in the subsequent runs prove, that the adaptive LIF neurons were capable of storing the position of the goal in short-term memory. 
+\cite{bellecLongShorttermMemory2018}}
+        \label{figurelabel}
+        \end{figure}
+        
+
+\subsection{Few-Shot Learning}
+
+One promising aspect of L2L is the capability of generalizing more than any conventional neural network. A model agile enough to understand
+underyling abstract knowledge about robotic motion does not only foreshadow better, more robust motoric control but especially a reduction in 
+training data. Bellec et al.\cite{bellecBiologicallyInspiredAlternatives2019} evaluated e-Prop 2 on a one-shot 
+learning task, where a trajectory of a 2-joint robotic arm should be learned by 
+the agent. That is, the error modules of e-Prop 2 had previously been trained sufficiently on a family of robotic kinematic tasks to generate
+fitting learning signals $\hat{L}^t_j$ and RSNN priors $\theta_{init}$. The learning phase of the agent was restricted to a single training run 
+to gain a strict evaluation on the capabilities of the L2L system. Interestingly, the agent was not given an inverse kinematic model, thus 
+requiring the model to understand the space mismatch between the endeffector pose (network target) in euclidean space and the joint space 
+(network output). A family of tasks $F$ was generated with each task $C$ representing a randomly generated target trajectory of the arm endeffector. 
+The inner RSNN is a network composed of 400 recurrent LIF neurons which receives inputs $\mathbf{x_t}$ and outputs the required joint velocities 
+to influencing the endeffector pose. 
+An outer loop error module, consisting of 300 LIF neurons was previously trained with the inputs $\mathbf{x_t}$, spiking activity of the RSNN 
+$\mathbf{z^t}$ and the target trajectory $y^{*,t}$ in Euclidean space. The optimization was conducted with BPTT over batches of 
+200 different tasks to minimize expectation of the loss sum across the family of tasks. 
+\begin{figure}[thpb]
+        \centering
+        \framebox{\parbox{3in}{
+        \includegraphics[scale=.35]{eprop2robot.png}
+}}
+\caption{Results of one-shot learning tasks before (left) and after (right) a single training trial. After a training run, the RSNN 
+synpatic weights were updated using learning signal $\hat{L}^t_j$ (bottom). In the fifth row, spikes in the error module have become sparse after
+the training run, which can be explained by the low error-rate generated by a learned RSNN \cite{bellecBiologicallyInspiredAlternatives2019}}
         \label{figurelabel}
         \end{figure}
 
+Fig. x shows the result of the motor outputs by the RSNN after a single training trial, provided the error modules experienced sufficient training.
+In plots 1-4 it becomes apparent, that the first and only training trial was inevitably unsuccesful but generally sufficed to generate trajectories
+ with a MSE of 0.003 after a single update of weights with Learning signals from an outer error module. We can 
+conclude, that the network has achieved one-shot learning capability for the infinitly large family of random trajectories in a 2-joint robotic arm.
+
+\section{DISCUSSION}
+ 
+The heretofore described framework of L2L and its various applications poses promising persectives for future work in the fields 
+of machine learning, robotics but also neuroscience and cognitive sciences. Historically, these fields have been intertwined and underwent
+phases of more and phases of less interaction but nonetheless generated implications that could be of scientific use for the other. Cognitive 
+sciences provide ideas and inspirations for ever further sophisticated algorithms, while Artificial Neural Networks can offer evaluations of 
+plausibility for biological models or in turn stimulate new implications for neuroscience on the basis of well-working algorithmic models. L2L
+is particularly intersting when considering the gap in learning efficiency between human brains and ANNs. The idea of certain preshaped 
+priors innert to human brains is certainly not new to cognitive sciences and seem quite obvious when regarding how the uniform efficiency with 
+which all human brains are capabale of learning. However conclusions on the origin and development of such preengineered priors remain vague
+and manifold. Wang et al.\cite{wangPrefrontalCortexMetareinforcement2018} propose,
+that midbrain dopamine-driven synaptic plasticity in the brain may well be an outer-loop optimization system shaping 
+learning in the prefrontal cortex (PFC), 
+which in turn acts as a hierarchically lower learner. The dopamine neurons of the midbrain are thought to employ reward prediction 
+error signals which shape synaptic connectivity in such a way that animals are prone to improve performance 
+\cite{montagueFrameworkMesencephalicDopamine1996}. It is however 
+up to debate, to which extent these signals contain information which is based on a environment-dependent model (model-based) or occur model-free.
+For example, \cite{dawModelbasedInfluencesHumans2011}Daw et al. discovered evidence, that signals strongly correlated to 
+dopaminergic prediction errors contain robust model-based
+information \cite{botvinickReinforcementLearningFast2019}\cite{dawModelbasedInfluencesHumans2011}.
+In this regard, Wang et al.\cite{wangPrefrontalCortexMetareinforcement2018} point out that a meta-RL system trained with a model-free RL algorithm 
+can generate model-based like behaviour in the inner loop algorithm. They suggest that very similarly, 
+human brains may actually operate in a grey area between 
+model-free and model-based RL and do so in coordinance with the uniformity of environmental structures. \newline
+
+Bellec et al.\cite{bellecLongShorttermMemory2018} yield a different interpretation of the nested nature of L2L and argue that 
+sophisticated priors and learning algorithms have been
+shaped by long evolutionary processes. In fact this perspective alleviates the imminent need for biologically implausible processes such as the 
+backpropagation of error-gradient learning signals through multiple layers and even time. By optimizing directly broadcasted learning signals coupled
+with eligibility traces of spiking neurons, Bellec et al. were the first to reproduce meta-learning in networks of spiking neurons and provide 
+promising results, albeit not yet surpassing performance of BPTT-based ANNs. \newline
+
+On another note, the implementation and performance of SNNs is strongly linked to the development of fitting neuromorphic hardware and appropriate
+algorithms. Taking into consideration the analogy of evolution for L2L, it should come with little surprise that the outer loop optimization of L2L 
+is considered a crucial bottleneck in terms of capability and computational efforts \cite{duanBenchmarkingDeepReinforcement}. 
+In the light of energy and computation efficiency, 
+LSNNs exhibit the remarkable characteristic of sparse firing activity and implies further capabilites in activity-silent memory, much like 
+human brains. \newline
+
+Applications of L2L such as the experiments described in previous chapters point at the opportunities of this approach but to this date remain
+proof-of-concepts. Duan et al.\cite{duanRLFastReinforcement2016} hold upscaling of L2L for broader distributions of tasks to be 
+the most important next step in this approach. It 
+is yet to be determined, how L2L models could be combined to generate a single system with dedicated learning modules to tackle applications which 
+require vast ranges of skills.
+Large-scale projects such as the "Scalable Deep Reinforcement 
+Learning for Robotic Manipulation" by Google Brain\cite{ScalableDeepReinforcement} are evidence of the imminent need for data efficient, 
+generalizing learning algorithms, 
+especially in the light of the immense efforts currently needed to 
+apply deep learning algorithms in robotics. Simulation based projects like "Learning Dexterity" by OpenAI \cite{LearningDexterity2018} 
+are challenged by sim2real and 
+again invest immense efforts in domain randomization approaches. A network architecture that promises greater generalization ability could hold 
+answers for better results in terms of stability and safety as well. Especially when deployed in large machines 
+(e.g. industrial robotics, autonomous driving),
+Deep Learning is required to adhere to high safety standards with nearly impossible-to-get training data. 
+L2L might therefore be part of some of 
+the largest upcoming challenges faced in this field.
 
 
-more from :  \newline
-Meta-SGD: Learning to Learn Quickly for Few-Shot Learning (Li et al.) \newline
-Meta-learning in Reinforcement Learning (Schweighofer and Doya) \newline
-Learning to Learn without Gradient Descent by Gradient Descent (Chen et al.)
-Learning Transferable Architectures for Scalable Image Recognition (Zoph et al.)
-OPTIMIZATION AS A MODEL FOR FEW-SHOT LEARNING (Ravi and Larochelle)
-One-Shot Imitation Learning (Duan et al.)
-
-\subsection{Speed Improvement and Few-Shot Learning}
-
-\section{CONCLUSION AND CHALLENGES}
-
-\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
+%\newpage
+%\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens
                                   % the textheight of the last page by a suitable amount.
                                   % This command does not take effect until the next page
@@ -650,21 +905,9 @@ One-Shot Imitation Learning (Duan et al.)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{APPENDIX}
 
-Appendixes should appear before the acknowledgment.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{thebibliography}{99}
-
-\bibitem{c1}
-
-
-
-
-\end{thebibliography}
-
+\bibliography{L2L}
+\bibliographystyle{plain}
 
 
 
