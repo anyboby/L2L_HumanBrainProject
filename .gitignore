@@ -12,6 +12,8 @@
 *.cb2
 .*.lb
 
+.history/
+
 ## Intermediate documents:
 *.dvi
 *.xdv
